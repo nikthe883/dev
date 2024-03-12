@@ -31,13 +31,17 @@
                 
                 <div class="card shadow-sm">
 
-                 
-                  {% if product.images.all %}
-                    <img class="img-fluid" alt="Responsive image" src="{{ product.images.first.image.url }}">
-                  {% else %}
-                    <img class="img-fluid" alt="Responsive image" src="{% static 'placeholder.jpg' %}">
-                  {% endif %}
-                
+              {% if product.images.all %}
+              
+                {% for image in product.images.all %}
+                <p> There are images</p>
+                    <img class="img-fluid" alt="Responsive image" src="{{ image.image.url }}">
+                {% endfor %}
+            {% else %}
+            
+                <img class="img-fluid" alt="Responsive image" src="{% static 'placeholder.jpg' %}">
+            {% endif %}
+           
                 
                 
                   <div class="card-body">

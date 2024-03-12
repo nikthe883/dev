@@ -48,27 +48,27 @@ class CreateProductView(CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        product = form.save(commit=False)  # Save product form data (CreateProductForm)
+        product = form.save(commit=False)
 
         context = self.get_context_data()
-        formset = context['formset']  # Assuming you assign formset to context
+        formset = context['formset']
 
-
-        formset.empty_permitted = True
-        if formset.is_valid():  # Validate the entire formset first
-            product.save()  # Save product instance after validation
+        if formset.is_valid() and formset.total_form_count() > 0:
+            product.save()
 
             for image_form in formset:
-                image = image_form.save(commit=False)
-                image.product = product
-                image.save()
+                if image_form.cleaned_data:
+                    image = image_form.save(commit=False)
+                    image.product = product
+                    image.save()
 
             messages.success(self.request, "The product was added successfully.")
             return super().form_valid(form)
         else:
-            
             messages.error(self.request, "Failed to add the product. Please check the formset.")
-            print(form.errors)
+            print("Formset errors:", formset.errors)
+            print("Non-form errors:", formset.non_form_errors())
+            print("Management form errors:", formset.management_form.errors)
             return self.form_invalid(form)
 
 
@@ -104,6 +104,14 @@ class UserProductsView(ListView):
 
     def get_queryset(self):
         current_user = self.request.user.id
+        products = Product.objects.filter(user=current_user)
+    
+
+        for product in products:
+            print(f"Product: {product.title}")
+            for image in product.images.all():
+                print(f"  Image: {image.image.url}")
+
         return Product.objects.filter(user=current_user)
 
 

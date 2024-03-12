@@ -50,8 +50,6 @@ class Product(models.Model):
 
     price = models.DecimalField(max_digits=9, decimal_places=2)
 
-
-
     user = models.ForeignKey(User, max_length=10, on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
@@ -78,5 +76,5 @@ class Product(models.Model):
 
 
 class Images(models.Model):
-    product = models.ForeignKey(Product, default=None,on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, default=None,on_delete=models.CASCADE,  related_name='images')
     image = models.ImageField(upload_to='images')
