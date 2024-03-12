@@ -42,7 +42,6 @@ from django.views.generic.edit import UpdateView
 class CreateProductView(CreateView):
     model = Product
     form_class = CreateProductForm  # Your custom form for product data
-    formset_class = PostFormSet 
     template_name = 'account/add-product.html'
 
     success_url = 'dashboard'
@@ -54,36 +53,43 @@ class CreateProductView(CreateView):
         context = self.get_context_data()
         formset = context['formset']  # Assuming you assign formset to context
 
-        if form.is_valid() and formset.is_valid():
+
+        formset.empty_permitted = True
+        if formset.is_valid():  # Validate the entire formset first
             product.save()  # Save product instance after validation
 
-            for image_form in formset:  # Iterate through image forms
+            for image_form in formset:
                 image = image_form.save(commit=False)
-                image.product = product  # Associate image with the saved product
+                image.product = product
                 image.save()
 
             messages.success(self.request, "The product was added successfully.")
             return super().form_valid(form)
         else:
-            # Formset is invalid, handle errors
-            formset_errors = formset.errors  # Access formset errors dictionary
-            print(formset_errors)  # Print errors for debugging
-            # ... handle error display in template (optional)
-            return self.render_to_response(self.get_context_data(form=form))
+            
+            messages.error(self.request, "Failed to add the product. Please check the formset.")
+            print(form.errors)
+            return self.form_invalid(form)
 
+
+        
+    def form_invalid(self, form):
+        messages.error(self.request, "Failed to add the product.")
+        return super().form_invalid(form)
 
     def get_success_url(self) -> str:
         return reverse_lazy(self.success_url)
     
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)  # Get default context
+        context = super().get_context_data(**kwargs)
+
         if self.request.POST:
-            formset = PostFormSet(self.request.POST, self.request.FILES)
+            formset = PostFormSet(self.request.POST, self.request.FILES, instance=self.object)
         else:
-            formset = PostFormSet()
-        context['formset'] = formset  # Assign the formset instance with 'formset' key
+            formset = PostFormSet(instance=self.object)
+
+        context['formset'] = formset
         return context
-    
 
     
 
@@ -94,6 +100,7 @@ class UserProductsView(ListView):
     model = Product
     template_name = 'account/my-products.html'
     context_object_name = 'my_products'
+
 
     def get_queryset(self):
         current_user = self.request.user.id

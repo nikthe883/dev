@@ -34,7 +34,7 @@ class ImageForm(forms.ModelForm):
 
 PostFormSet = inlineformset_factory(
     Product, Images, form=ImageForm,
-     extra=2, can_delete=True
+     extra=1
 )
 # Registration form
 

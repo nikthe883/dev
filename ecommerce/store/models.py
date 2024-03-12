@@ -76,9 +76,6 @@ class Product(models.Model):
 
         return reverse('product-info', args=[self.slug])
 
-def get_image_filename(instance, filename):
-    id = instance.post.id
-    return "post_images/%s" % (id)  
 
 class Images(models.Model):
     product = models.ForeignKey(Product, default=None,on_delete=models.CASCADE)

@@ -51,8 +51,6 @@ INSTALLED_APPS = [
 
     'crispy_forms', # Crispy forms
 
-
-
 ]
 
 # To un-block PayPal popups - NB!

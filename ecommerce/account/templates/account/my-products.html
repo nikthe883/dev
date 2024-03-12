@@ -32,7 +32,11 @@
                 <div class="card shadow-sm">
 
                  
-                  <img class="img-fluid" alt="Responsive image" src="{{ product.image.url }}">
+                  {% if product.images.all %}
+                    <img class="img-fluid" alt="Responsive image" src="{{ product.images.first.image.url }}">
+                  {% else %}
+                    <img class="img-fluid" alt="Responsive image" src="{% static 'placeholder.jpg' %}">
+                  {% endif %}
                 
                 
                 
