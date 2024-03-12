@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from . models import Category, Product
+from . models import Category, Product, Images
 
 
 @admin.register(Category)
@@ -15,5 +15,10 @@ class CategoryAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
 
     prepopulated_fields = {'slug': ('title',)}
+
+
+@admin.register(Images)
+class ImagesAdmin(admin.ModelAdmin):
+    pass
 
 

@@ -41,39 +41,50 @@ from django.views.generic.edit import UpdateView
 @method_decorator(csrf_protect, name='dispatch')
 class CreateProductView(CreateView):
     model = Product
-    form_class = PostFormSet
+    form_class = CreateProductForm  # Your custom form for product data
+    formset_class = PostFormSet 
     template_name = 'account/add-product.html'
 
     success_url = 'dashboard'
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        messages.success(self.request, "The product was added successfully.")
-        return super().form_valid(form)
-    
-    def form_invalid(self, form):
+        product = form.save(commit=False)  # Save product form data (CreateProductForm)
+
         context = self.get_context_data()
-        form_img = context['form_images']
-        
-        form.instance.user = self.request.user
-        self.object = form.save()
-        if form_img.is_valid():
-            form_img.instance = self.object
-            form_img.save()
-        return super().form_valid(form)
-    
+        formset = context['formset']  # Assuming you assign formset to context
+
+        if form.is_valid() and formset.is_valid():
+            product.save()  # Save product instance after validation
+
+            for image_form in formset:  # Iterate through image forms
+                image = image_form.save(commit=False)
+                image.product = product  # Associate image with the saved product
+                image.save()
+
+            messages.success(self.request, "The product was added successfully.")
+            return super().form_valid(form)
+        else:
+            # Formset is invalid, handle errors
+            formset_errors = formset.errors  # Access formset errors dictionary
+            print(formset_errors)  # Print errors for debugging
+            # ... handle error display in template (optional)
+            return self.render_to_response(self.get_context_data(form=form))
+
+
     def get_success_url(self) -> str:
         return reverse_lazy(self.success_url)
     
     def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        data['form_images'] = PostFormSet()
+        context = super().get_context_data(**kwargs)  # Get default context
         if self.request.POST:
-            data['form_images'] = PostFormSet(
-                self.request.POST, self.request.FILES)
+            formset = PostFormSet(self.request.POST, self.request.FILES)
         else:
-            data['form_images'] = PostFormSet()
-        return data
+            formset = PostFormSet()
+        context['formset'] = formset  # Assign the formset instance with 'formset' key
+        return context
+    
+
     
 
 
