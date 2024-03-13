@@ -88,7 +88,16 @@ urlpatterns = [
     path('my-products', UserProductsView.as_view(),name='my-products'),
 
 
-    path('product/<slug:slug>/update/', UserProductUpdateView.as_view(), name='update-product')
+    path('product/<slug:slug>/update/', UserProductUpdateView.as_view(), name='update-product'),
+
+    # messaging
+
+    path('message-list', views.message_list, name='message-list'),
+
+    path('message-detail', views.message_detail, name='message-detail'),
+
+
+
 ]
 
 

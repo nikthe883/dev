@@ -1,6 +1,6 @@
 from gettext import translation
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 
 from .forms import CreateUserForm, LoginForm, PostFormSet, UpdateUserForm, CreateProductForm
 
@@ -22,7 +22,7 @@ from django.contrib.auth.decorators import login_required
 
 
 from django.contrib import messages
-
+from .models import Message
 
 # class based views imports
 from django.views.generic.edit import FormView, CreateView
@@ -36,6 +36,13 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
 
+def message_list(request):
+    messages = Message.objects.all()
+    return render(request, 'message-list.html', {'messages': messages})
+
+def message_detail(request, pk):
+    message = get_object_or_404(Message, pk=pk)
+    return render(request, 'message-detail.html', {'message': message})
 
 @method_decorator(login_required(login_url='my-login'), name='dispatch')
 @method_decorator(csrf_protect, name='dispatch')
