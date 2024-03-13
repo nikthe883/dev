@@ -38,11 +38,11 @@ from django.views.generic.edit import UpdateView
 
 def message_list(request):
     messages = Message.objects.all()
-    return render(request, 'message-list.html', {'messages': messages})
+    return render(request, 'account/message-list.html', {'messages': messages})
 
 def message_detail(request, pk):
     message = get_object_or_404(Message, pk=pk)
-    return render(request, 'message-detail.html', {'message': message})
+    return render(request, 'account/message-detail.html', {'message': message})
 
 @method_decorator(login_required(login_url='my-login'), name='dispatch')
 @method_decorator(csrf_protect, name='dispatch')
