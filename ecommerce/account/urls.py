@@ -94,7 +94,9 @@ urlpatterns = [
 
     path('message-list', views.message_list, name='message-list'),
 
-    path('message-detail', views.message_detail, name='message-detail'),
+    path('message-detail/<int:pk>/', views.message_detail, name='message-detail'),
+
+    path('create-message', views.create_message, name='create-message'),
 
 
 

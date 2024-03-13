@@ -24,7 +24,7 @@
     </style>
 
     <body>
-{% endif %}
+
         <br>
 
         <div class="container bg-white shadow-md p-5 form-layout">
@@ -42,42 +42,24 @@
 
                 {% csrf_token %}
 
-                {{form.category|as_crispy_field}}
+                {{form.sender|as_crispy_field}}
 
 
                 <br> 
 
 
-                {{form.title|as_crispy_field}}
+                {{form.receiver|as_crispy_field}}
 
                 <br> 
 
-                {{form.brand|as_crispy_field}}
+                {{form.subject|as_crispy_field}}
 
                 <br>
 
 
-                {{form.description|as_crispy_field}}
+                {{form.body|as_crispy_field}}
 
 
-
-
-
-                <br>
-
-
-                {{form.price|as_crispy_field}}
-
-
-                <br>
-
-
-
-
-                {{form.images|as_crispy_field}}
-
-
-                <br>
 
 
                 <button type="submit" class="btn btn-primary navbar-btn text-white w-100 p-2"> send message </button>

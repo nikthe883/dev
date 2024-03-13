@@ -2,7 +2,7 @@ from gettext import translation
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 
-from .forms import CreateUserForm, LoginForm, PostFormSet, UpdateUserForm, CreateProductForm
+from .forms import CreateUserForm, LoginForm, PostFormSet, UpdateUserForm, CreateProductForm, MessageForm
 
 
 from django.contrib.auth.models import User
@@ -35,6 +35,25 @@ from django.views.decorators.csrf import csrf_protect
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
+
+def create_message(request):
+
+
+
+    if request.method == 'POST':
+
+        form = MessageForm(request.POST)
+
+        if form.is_valid():
+
+            message_instance = form.save(commit=False)
+            message_instance.save()
+            return redirect('dashboard')
+    else:
+        form = MessageForm()
+
+    return render(request, 'account/create-message.html', {'form': form})
+
 
 def message_list(request):
     messages = Message.objects.all()
@@ -73,9 +92,6 @@ class CreateProductView(CreateView):
             return super().form_valid(form)
         else:
             messages.error(self.request, "Failed to add the product. Please check the formset.")
-            print("Formset errors:", formset.errors)
-            print("Non-form errors:", formset.non_form_errors())
-            print("Management form errors:", formset.management_form.errors)
             return self.form_invalid(form)
 
 
