@@ -96,7 +96,7 @@ urlpatterns = [
 
     path('message-detail/<int:pk>/', views.message_detail, name='message-detail'),
 
-    path('create-message', views.create_message, name='create-message'),
+    path('create-message/<slug:product_slug>/', views.create_message, name='create-message'),
 
 
 

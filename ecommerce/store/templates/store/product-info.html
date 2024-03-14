@@ -22,12 +22,12 @@
                 <h1 class="mb-0 h4"> {{ product.title }}  </h1>
 
                 <strong> {{ product.brand }} </strong>
-
+                
 
                 <hr>
 
                 <br>
-
+                <a href="{% url 'create-message' product_slug=product.slug %}">Send message about {{ product.title }}</a>
 
                 <p> {{ product.description }} </p>
 

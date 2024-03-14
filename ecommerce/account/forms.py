@@ -42,7 +42,7 @@ PostFormSet = inlineformset_factory(
 class MessageForm(forms.ModelForm):
     class Meta:
          model = Message
-         fields = ['sender', 'receiver', 'subject', 'body']
+         fields = ['subject', 'body']
 
 
 
