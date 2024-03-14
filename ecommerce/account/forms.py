@@ -44,6 +44,8 @@ class MessageForm(forms.ModelForm):
          model = Message
          fields = ['sender', 'receiver', 'subject', 'body']
 
+
+
 # Registration form
 
 class CreateUserForm(UserCreationForm):
