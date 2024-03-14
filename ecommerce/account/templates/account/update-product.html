@@ -47,41 +47,14 @@
             <form action="" method="post" enctype="multipart/form-data">
 
                 {% csrf_token %}
-
-                {{form.category|as_crispy_field}}
-
-
-                <br> 
-
-
-                {{form.title|as_crispy_field}}
-
-                <br> 
-
-                {{form.brand|as_crispy_field}}
-
-                <br>
-
-
-                {{form.description|as_crispy_field}}
-
-
-
-
-
-                <br>
-
-
-                {{form.price|as_crispy_field}}
-
-
-                <br>
-
-
-
-
-                {{form.images|as_crispy_field}}
-
+                {{ form|crispy }} <!-- Render the main form -->
+                {{ formset.management_form }} <!-- Include formset management form -->
+            
+                {% for image_form in formset %}
+                    {{ image_form.id }}
+                {% endfor %}
+            
+                {{ formset|crispy }} <!-- Render the entire formset -->
 
                 <br>
 

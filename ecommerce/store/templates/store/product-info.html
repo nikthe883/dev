@@ -13,7 +13,16 @@
 
             <div class="col-md-5 col-lg-5 order-md-first bg-light">
             
-                <img class="img-fluid mx-auto d-block" alt="Responsive image" src="{{ product.image.url }}">
+                {% if product.images.all %}
+              
+                {% for image in product.images.all %}
+                <p> There are images</p>
+                    <img class="img-fluid" alt="Responsive image" src="{{ image.image.url }}">
+                {% endfor %}
+            {% else %}
+            
+                <img class="img-fluid" alt="Responsive image" src="{% static 'placeholder.jpg' %}">
+            {% endif %}
             
             </div>
 

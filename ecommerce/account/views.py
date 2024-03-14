@@ -86,7 +86,7 @@ class CreateProductView(CreateView):
         context = self.get_context_data()
         formset = context['formset']
 
-        if formset.is_valid() and formset.total_form_count() > 0:
+        if formset.is_valid() and form.is_valid:
             product.save()
 
             for image_form in formset:
@@ -98,7 +98,7 @@ class CreateProductView(CreateView):
             messages.success(self.request, "The product was added successfully.")
             return super().form_valid(form)
         else:
-            messages.error(self.request, "Failed to add the product. Please check the formset.")
+            messages.error(self.request, "Failed to add the product.")
             return self.form_invalid(form)
 
 
@@ -134,14 +134,6 @@ class UserProductsView(ListView):
 
     def get_queryset(self):
         current_user = self.request.user.id
-        products = Product.objects.filter(user=current_user)
-    
-
-        for product in products:
-            print(f"Product: {product.title}")
-            for image in product.images.all():
-                print(f"  Image: {image.image.url}")
-
         return Product.objects.filter(user=current_user)
 
 
@@ -155,10 +147,44 @@ class UserProductUpdateView(UpdateView):
 
     success_url = 'dashboard'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.request.POST:
+            formset = PostFormSet(self.request.POST, self.request.FILES, instance=self.object)
+        else:
+            formset = PostFormSet(instance=self.object)
+
+        context['formset'] = formset
+        return context
+    
     def form_valid(self, form):
         form.instance.user = self.request.user
-        messages.success(self.request, "The product was added successfully.")
-        return super().form_valid(form)
+        product = form.save(commit=False)
+
+        context = self.get_context_data()
+        formset = context['formset']
+
+        print(formset.data,)  # Print formset data for debugging
+
+        if formset.is_valid():
+            product.save()
+
+            if formset.total_form_count() > 0:  # Check if there are any images to process
+                        for image_form in formset:
+                            if image_form.cleaned_data:
+                                image = image_form.save(commit=False)
+                                image.product = product
+                                image.save()
+
+            messages.success(self.request, "The product was added successfully.")
+            return super().form_valid(form)
+        else:
+            print(formset.errors)
+            messages.error(self.request, "Failed to add the product. Please check the formset.")
+            
+            return self.form_invalid(form)
+
     
     def form_invalid(self, form):
         return super().form_invalid(form)
