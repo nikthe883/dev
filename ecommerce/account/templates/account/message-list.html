@@ -43,32 +43,32 @@
     {% endfor %}
 
     <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const messageHeaders = document.querySelectorAll('.message-header');
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageHeaders = document.querySelectorAll('.message-header');
 
-    messageHeaders.forEach(header => {
-        header.addEventListener('click', function() {
-            const content = this.nextElementSibling;
-            const url = content.getAttribute('data-url');
+            messageHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const url = content.getAttribute('data-url');
 
-            // Check if the content is currently visible
-            if (content.style.display === 'block') {
-                content.style.display = 'none'; // Hide the content
-            } else {
-                // Load message content from server if it's not already loaded
-                fetch(url)
-                    .then(response => response.text())
-                    .then(data => {
-                        console.log('Received content from server:', data);  // Log received content
-                        content.innerHTML = data;
-                        console.log('Message content after setting innerHTML:', content.innerHTML);  // Log content after setting innerHTML
-                        content.style.display = 'block'; // Show the content
-                    })
-                    .catch(error => console.error('Error loading message content:', error));
-            }
+                    // Check if the content is currently visible
+                    if (content.style.display === 'block') {
+                        content.style.display = 'none'; // Hide the content
+                    } else {
+                        // Load message content from server if it's not already loaded
+                        fetch(url)
+                            .then(response => response.text())
+                            .then(data => {
+                                console.log('Received content from server:', data);  // Log received content
+                                content.innerHTML = data;
+                                console.log('Message content after setting innerHTML:', content.innerHTML);  // Log content after setting innerHTML
+                                content.style.display = 'block'; // Show the content
+                            })
+                            .catch(error => console.error('Error loading message content:', error));
+                    }
+                });
+            });
         });
-    });
-});
 
     </script>
     
