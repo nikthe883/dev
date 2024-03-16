@@ -1,3 +1,6 @@
+{% extends "store/base.html" %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,11 +32,13 @@
     </style>
 </head>
 <body>
+    
+    
     <h1>Messages</h1>
     {% for message in messages %}
         <div class="message">
             <div class="message-header">
-                    {{ message.subject }} from {{ message.sender.username }}
+                    {{ message.subject }} from {{ message.sender.username }} for {{ message.product.title}}
 
             </div>
             <div class="message-content" data-url="{% url 'message-detail' pk=message.pk %}">
@@ -75,3 +80,5 @@
     
 </body>
 </html>
+
+{% endblock %}

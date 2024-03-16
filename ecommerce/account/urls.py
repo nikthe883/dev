@@ -90,13 +90,7 @@ urlpatterns = [
 
     path('product/<slug:slug>/update/', UserProductUpdateView.as_view(), name='update-product'),
 
-    # messaging
 
-    path('message-list', views.message_list, name='message-list'),
-
-    path('message-detail/<int:pk>/', views.message_detail, name='message-detail'),
-
-    path('create-message/<slug:product_slug>/', views.create_message, name='create-message'),
 
 
 

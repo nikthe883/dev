@@ -7,8 +7,8 @@ from django.forms import ModelForm, inlineformset_factory
 
 from django.forms.widgets import PasswordInput, TextInput
 
-from store.models import Product, Category, Images
-from .models import Message
+from store.models import Product, Images
+
 
 # Prodcut from
 
@@ -37,12 +37,6 @@ PostFormSet = inlineformset_factory(
     Product, Images, form=ImageForm,
      extra=2
 )
-
-# Message form
-class MessageForm(forms.ModelForm):
-    class Meta:
-         model = Message
-         fields = ['subject', 'body']
 
 
 

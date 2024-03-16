@@ -7,7 +7,27 @@
 }
 
 
-
+        /* Custom CSS for message styling */
+        .message {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .message a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .message a:hover {
+            text-decoration: underline;
+        }
+        .message-content {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
 
 
 

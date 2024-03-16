@@ -27,6 +27,10 @@ urlpatterns = [
 
     path('account/', include('account.urls')),
 
+    # Message app
+
+    path('messages/', include('message.urls')),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

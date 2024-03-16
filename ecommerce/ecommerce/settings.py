@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'cart', # Django app
 
     'account', # Django app
+
+    'mesages', # Django app
     
     'mathfilters',
 
