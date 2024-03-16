@@ -29,7 +29,7 @@ urlpatterns = [
 
     # Message app
 
-    path('messages/', include('message.urls')),
+    path('messaging/', include('messaging.urls')),
 
 ]
 

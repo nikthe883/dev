@@ -22,7 +22,7 @@ from django.contrib.auth.decorators import login_required
 
 
 from django.contrib import messages
-from .models import Message
+
 
 # class based views imports
 from django.views.generic.edit import FormView, CreateView

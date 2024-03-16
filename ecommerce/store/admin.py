@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Category, Product, Images
-from account.models import Message
+from messaging.models import Message
 
 # Custom admin classes for each model
 class CategoryAdmin(admin.ModelAdmin):

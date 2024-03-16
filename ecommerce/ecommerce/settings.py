@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 
     'account', # Django app
 
-    'mesages', # Django app
+    'messaging', # Django app
     
     'mathfilters',
 
