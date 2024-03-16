@@ -1,6 +1,13 @@
 {% extends "store/base.html" %}
-
+{% load crispy_forms_tags %}
 {% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+    {% endfor %}
+</ul>
+{% endif %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,32 +40,51 @@
     </style>
 </head>
 <body>
+
+
     <h1>Messages</h1>
-    {% for message in messages %}
-    <div class="message{% if message.read %} message-read{% endif %}" id="read">
-        <div class="message-header" data-content-id="message-content-{{ message.pk }}" data-message-id="{{ message.pk }}">
-            
-            {{ message.subject }} from {{ message.sender.username }} for {{ message.product.title }}
+    {% for sender_product, messages in grouped_messages.items %}
+    <div class="message-group">
+        <h2>{{ sender_product }}</h2>
+        {% for message in messages %}
+        <div class="message{% if message.read %} message-read{% endif %}" id="message-{{ message.pk }}" >
+            <div class="message-header" data-content-id="message-content-{{ message.pk }}" data-message-id="{{ message.pk }}">
+                {{ message.subject }} from {{ message.sender.username }} for {{ message.product.title }}
+            </div>
+            <div class="message-content" id="message-content-{{ message.pk }}" style="display: none;">
+                <hr>
+                {{ message.body }}
+            </div>
+            <div class="options" id="options-{{ message.pk }}" style="display: none;">
+                <input type="text" id="message-input-{{ message.product.slug }}" placeholder="Enter your message...">
+                <button onclick="respond('{{ message.product.slug }}', '{{ message.subject }}')">Respond</button>
+
+                <button onclick="deleteMessage('{{ message.pk }}')">Delete</button>
+            </div>
         </div>
-        <div class="message-content" id="message-content-{{ message.pk }}" style="display: none;">
-            <hr>
-            {{ message.body }}
-        </div>
+        {% endfor %}
+
     </div>
     {% endfor %}
 
     <script>
+
         document.addEventListener('DOMContentLoaded', function() {
             const messageHeaders = document.querySelectorAll('.message-header');
-
+            const messages = document.querySelectorAll('.message');
+            
             messageHeaders.forEach(header => {
                 header.addEventListener('click', function() {
                     const contentId = this.getAttribute('data-content-id');
                     const content = document.getElementById(contentId);
-                    let read = document.getElementById('read');
+                    const optionsId = 'options-' + this.getAttribute('data-message-id');
+                    const options = document.getElementById(optionsId);
+
                     const messageId = this.getAttribute('data-message-id');
 
                     const csrftoken = getCookie('csrftoken');
+
+                    
 
                     fetch(`message-detail/${messageId}/`, {
                         method: 'POST',
@@ -67,26 +93,93 @@
                             'X-CSRFToken': csrftoken
                         }
                     })
-                    .then(response => {
-                        if (response.ok) {
-                            header.classList.add('message-read');
-                        } else {
-                            console.error('Error marking message as read');
-                        }
-                    })
-                    .catch(error => console.error('Error marking message as read:', error));
+
 
                     // Toggle the visibility of the message content
                     if (content.style.display === 'none') {
                         content.style.display = 'block';
-                        read.style.backgroundColor = 'lightgrey';
+                        options.style.display = 'block';
+                       
                         
                     } else {
                         content.style.display = 'none';
+                        options.style.display = 'none';
+                        
                     }
                 });
             });
+            messages.forEach(message =>{
+                message.addEventListener('click', function() {
+                    message.style.backgroundColor = 'lightgrey'; // Change background color to blue
+            })})
         });
+
+
+        function respond(productSlug, subject) {
+            const csrftoken = getCookie('csrftoken');
+            const url = `create-message/${productSlug}/`;  // Assuming messageId corresponds to product_slug
+
+            // Get the user input from the text input field
+            console.log(document.getElementById(`message-input-${productSlug}`))
+            const userInput = document.getElementById(`message-input-${productSlug}`).value;
+
+            // Construct the data to send in the POST request body
+            const requestData = {
+                subject: subject,       // Include the generated subject in the data
+                body: userInput  // Include the message body in the data
+            };
+            console.log(requestData)
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify(requestData)  // Send the data as JSON string in the body
+            })
+            .then(response => {
+                if (response.ok) {
+                  
+                    console.log('Message sent successfully');
+                    // Optionally, handle success response
+                } else {
+
+                    console.error('Failed to send message');
+                    // Optionally, handle error response
+                }
+            })
+            .catch(error => {
+                console.error('Error sending message:', error);
+                // Handle any network or other errors
+            });
+            }
+
+
+        function deleteMessage(messageId) {
+            const csrftoken = getCookie('csrftoken');
+            const url = `delete-message/${messageId}/`;
+
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',  // Add this header for Django to recognize AJAX requests
+                    'X-CSRFToken': csrftoken
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();  // Reload the page after successful deletion
+                } else {
+                    throw new Error('Error deleting message');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting message:', error);
+                // Handle errors or display error message to the user
+            });
+        }
+     
            // Function to get CSRF token from cookie
            function getCookie(name) {
             let cookieValue = null;
