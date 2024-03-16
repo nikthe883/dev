@@ -9,42 +9,42 @@
     <title>Messages</title>
     <style>
         /* Custom CSS for message styling */
+        body {
+            text-align: center;
+        }
+        h1 {
+            margin: 3rem;
+        }
         .message {
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
+            background-color: lightblue;
+            padding: 1rem;
+            margin: 0.5rem 20rem 0rem 20rem;
             cursor: pointer;
+            border: 1px solid rgb(199, 192, 192);
+            border-radius: 10px;
         }
-        .message a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .message a:hover {
-            text-decoration: underline;
-        }
+
         .message-content {
-            display: none;
-            margin-top: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
+            margin-top: 1rem;
+        }
+        .message-read {
+            background-color: lightgrey;
         }
     </style>
 </head>
 <body>
-    
-    
     <h1>Messages</h1>
     {% for message in messages %}
-        <div class="message">
-            <div class="message-header">
-                    {{ message.subject }} from {{ message.sender.username }} for {{ message.product.title}}
-
-            </div>
-            <div class="message-content" data-url="{% url 'message-detail' pk=message.pk %}">
-                <!-- Placeholder for message content -->
-            </div>
+    <div class="message{% if message.read %} message-read{% endif %}" id="read">
+        <div class="message-header" data-content-id="message-content-{{ message.pk }}" data-message-id="{{ message.pk }}">
+            
+            {{ message.subject }} from {{ message.sender.username }} for {{ message.product.title }}
         </div>
+        <div class="message-content" id="message-content-{{ message.pk }}" style="display: none;">
+            <hr>
+            {{ message.body }}
+        </div>
+    </div>
     {% endfor %}
 
     <script>
@@ -53,32 +53,58 @@
 
             messageHeaders.forEach(header => {
                 header.addEventListener('click', function() {
-                    const content = this.nextElementSibling;
-                    const url = content.getAttribute('data-url');
+                    const contentId = this.getAttribute('data-content-id');
+                    const content = document.getElementById(contentId);
+                    let read = document.getElementById('read');
+                    const messageId = this.getAttribute('data-message-id');
 
-                    // Check if the content is currently visible
-                    if (content.style.display === 'block') {
-                        content.style.display = 'none'; // Hide the content
+                    const csrftoken = getCookie('csrftoken');
+
+                    fetch(`message-detail/${messageId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            header.classList.add('message-read');
+                        } else {
+                            console.error('Error marking message as read');
+                        }
+                    })
+                    .catch(error => console.error('Error marking message as read:', error));
+
+                    // Toggle the visibility of the message content
+                    if (content.style.display === 'none') {
+                        content.style.display = 'block';
+                        read.style.backgroundColor = 'lightgrey';
+                        
                     } else {
-                        // Load message content from server if it's not already loaded
-                        fetch(url)
-                            .then(response => response.text())
-                            .then(data => {
-                                console.log('Received content from server:', data);  // Log received content
-                                content.innerHTML = data;
-                                console.log('Message content after setting innerHTML:', content.innerHTML);  // Log content after setting innerHTML
-                                content.style.display = 'block'; // Show the content
-                            })
-                            .catch(error => console.error('Error loading message content:', error));
+                        content.style.display = 'none';
                     }
                 });
             });
         });
-
+           // Function to get CSRF token from cookie
+           function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
     </script>
-    
-    
 </body>
 </html>
+
 
 {% endblock %}

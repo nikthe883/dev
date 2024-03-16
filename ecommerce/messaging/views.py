@@ -1,7 +1,8 @@
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404,HttpResponse
 from .forms import MessageForm
 from store.models import Product
 from .models import Message
+from django.http import JsonResponse
 
 def create_message(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
@@ -30,9 +31,14 @@ def create_message(request, product_slug):
 
 def message_list(request):
     current_user = request.user.id
-    messages = Message.objects.filter(receiver=current_user).select_related('product')
+    unread_messages = Message.objects.filter(receiver=current_user, read=False).order_by('-created_at').select_related('product')
+    read_messages = Message.objects.filter(receiver=current_user, read=True).order_by('-created_at').select_related('product')
+    messages = list(unread_messages) + list(read_messages)
     return render(request, 'messages/message-list.html', {'messages': messages})
 
 def message_detail(request, pk):
     message = get_object_or_404(Message, pk=pk)
-    return render(request, 'messages/message-detail.html', {'message': message})
+    message.read = True
+    message.save()
+    return JsonResponse({'status': 'success'})
+

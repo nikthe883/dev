@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Category, Product, Images
 from messaging.models import Message
+from django.apps import apps
 
 # Custom admin classes for each model
 class CategoryAdmin(admin.ModelAdmin):
@@ -31,7 +32,18 @@ from django.contrib.auth.models import Group, Permission
 admin_group, created = Group.objects.get_or_create(name='Admin')
 
 # Get permissions for all models
-all_permissions = Permission.objects.filter(content_type__app_label='your_app_label')
+# Get all installed apps
+installed_apps = apps.get_app_configs()
+
+# List to store all permissions
+all_permissions = []
+
+# Loop through each installed app
+for app in installed_apps:
+    # Get all permissions for the current app
+    permissions = Permission.objects.filter(content_type__app_label=app.label)
+    # Extend the list of all_permissions with permissions for the current app
+    all_permissions.extend(permissions)
 
 # Assign all permissions to the admin group
 admin_group.permissions.set(all_permissions)
