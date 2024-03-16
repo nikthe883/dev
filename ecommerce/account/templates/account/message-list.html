@@ -1,12 +1,77 @@
-<h1>Messages</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages</title>
+    <style>
+        /* Custom CSS for message styling */
+        .message {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .message a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .message a:hover {
+            text-decoration: underline;
+        }
+        .message-content {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Messages</h1>
+    {% for message in messages %}
+        <div class="message">
+            <div class="message-header">
+                    {{ message.subject }} from {{ message.sender.username }}
 
+            </div>
+            <div class="message-content" data-url="{% url 'message-detail' pk=message.pk %}">
+                <!-- Placeholder for message content -->
+            </div>
+        </div>
+    {% endfor %}
 
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const messageHeaders = document.querySelectorAll('.message-header');
 
+    messageHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            const url = content.getAttribute('data-url');
 
-{% for message in messages %}
-    <div class="message">
-        <a href="{% url 'message-detail' pk=message.pk %}">
-            {{ message.subject }} from {{ message.sender.username }}
-        </a>
-    </div>
-{% endfor %}
+            // Check if the content is currently visible
+            if (content.style.display === 'block') {
+                content.style.display = 'none'; // Hide the content
+            } else {
+                // Load message content from server if it's not already loaded
+                fetch(url)
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log('Received content from server:', data);  // Log received content
+                        content.innerHTML = data;
+                        console.log('Message content after setting innerHTML:', content.innerHTML);  // Log content after setting innerHTML
+                        content.style.display = 'block'; // Show the content
+                    })
+                    .catch(error => console.error('Error loading message content:', error));
+            }
+        });
+    });
+});
+
+    </script>
+    
+    
+</body>
+</html>
