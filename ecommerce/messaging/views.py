@@ -35,7 +35,6 @@ def create_message(request, product_slug):
             messages.success(request, 'Message send successfully')
             return redirect('dashboard')
         else:	
-            print(form.errors)
             messages.error(request, 'Message not send successfully')
 
     else:
