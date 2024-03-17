@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Category, Product, Images
-from messaging.models import Message
+from messaging.models import Message, Conversation
 from django.apps import apps
 
 # Custom admin classes for each model
@@ -13,6 +13,8 @@ class ProductAdmin(admin.ModelAdmin):
 class ImagesAdmin(admin.ModelAdmin):
     pass
 
+class ConversationsAdmin(admin.ModelAdmin):
+    pass
 
 class MessageAdmin(admin.ModelAdmin):
     list_display = ['sender', 'receiver', 'subject', 'created_at']
@@ -24,7 +26,7 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Images, ImagesAdmin)
 admin.site.register(Message, MessageAdmin)
-
+admin.site.register(Conversation,ConversationsAdmin)
 # Define custom admin groups and assign permissions
 from django.contrib.auth.models import Group, Permission
 

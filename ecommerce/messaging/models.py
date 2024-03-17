@@ -3,8 +3,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from store.models import Product
 
+class Conversation(models.Model):
+    participants = models.ManyToManyField(User, related_name='conversations')
 class Message(models.Model):
 
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages', null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="messages", null=True, blank=True)
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_messages")
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_messages")

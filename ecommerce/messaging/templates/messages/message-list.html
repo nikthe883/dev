@@ -40,37 +40,31 @@
     </style>
 </head>
 <body>
-
-
     <h1>Messages</h1>
-    {% for sender_product, messages in grouped_messages.items %}
-    <div class="message-group">
-        <h2>{{ sender_product }}</h2>
-        <div>
-            <input type="text" id="message-input-{{ messages.0.product.slug }}" placeholder="Enter your message...">
-            <button onclick="respond('{{ messages.0.product.slug }}', '{{ messages.0.subject }}', '{{ sender_product.1 }}')">Respond</button>
+    {% for conversation in conversations %}
 
-            <button onclick="deleteMessage('{{ messages.0.pk }}')">Delete</button>
-        </div>
-        {% for message in messages %}
-        <div class="message{% if message.read %} message-read{% endif %}" id="message-{{ message.pk }}" >
-            <div class="message-header" data-content-id="message-content-{{ message.pk }}" data-message-id="{{ message.pk }}">
-                {% if message.sender.username == sender_product.0.username %}
-                {{ message.sender.username }} 
-            {% else %}
-                <h4>Me</h4>
+    <h2>Conversation with 
+        {% for participant in conversation.participants.all %}
+            {% if participant.id != request.user.id %}
+                {{ participant.username }}
             {% endif %}
-            </div>
-   
-                {{ message.body }}
-          
-           
-        </div>
         {% endfor %}
-
+    </h2>
+    <ul>
+        {% for message in conversation.messages.all %}
+            <li>{{ message.sender.username }}: {{ message.body }}</li>
+         
+        {% endfor %}
+    </ul>
+    <div>
+        {{ conversation.messages.first.sender.username }}
+        <input type="text" id="message-input-{{ conversation.messages.first.sender.username }}" placeholder="Enter your message...">
+        <button onclick="respond('{{ conversation.messages.first.product.slug }}', '{{ conversation.messages.first.subject }}', '{{ conversation.messages.first.sender.username }}')">Respond</button>
     </div>
-    {% endfor %}
-
+    {{conversation.pk }}
+    <!-- Delete conversation -->
+    <button onclick="deleteMessage('{{conversation.pk }}')">Delete</button>
+{% endfor %}
     <script>
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -120,7 +114,7 @@
             const url = `create-message/${productSlug}/`;  // Assuming messageId corresponds to product_slug
 
             // Get the user input from the text input field
-            const userInput = document.getElementById(`message-input-${productSlug}`).value;
+            const userInput = document.getElementById(`message-input-${receiver}`).value;
             console.log(userInput);
             // Construct the data to send in the POST request body
             const requestData = {
@@ -141,7 +135,7 @@
             })
             .then(response => {
                 if (response.ok) {  
-                   // location.reload();
+                    location.reload();
                     console.log('Message sent successfully');
                     // Optionally, handle success response
                 } else {

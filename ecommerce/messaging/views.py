@@ -1,68 +1,79 @@
 from django.shortcuts import redirect, render, get_object_or_404,HttpResponse
 from .forms import MessageForm
 from store.models import Product
-from .models import Message
+from .models import Message, Conversation
 from django.http import JsonResponse
 from django.contrib import messages
 import json
 from django.contrib.auth.models import User
 from django.db.models import Q
 
+from django.db import transaction
+
+@transaction.atomic
 def create_message(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
+    
     if request.method == 'POST':
         if 'application/json' in request.content_type:
-            # Parse the JSON data from the request body
             try:
                 data = json.loads(request.body)
             except json.JSONDecodeError:
                 return JsonResponse({'error': 'Invalid JSON data'}, status=400)
             
-            # Create a MessageForm instance with the parsed data
             form = MessageForm(dict(list(data.items())[:2]))
-          
-    
+
             if form.is_valid():
-    
                 message_instance = form.save(commit=False)
-                message_instance.sender = request.user  # Assign the current user as the sender
-                
+                message_instance.sender = request.user
                 message_instance.product = product
                 
+                # Fetch the User instance corresponding to the receiver's username
+                receiver_username = list(data.values())[-1]
                 
-                # Fetch the User instance corresponding to the username 'admin'
-                receiver_user = User.objects.get(username=list(data.values())[-1])
-
-                # Assign the User instance to the receiver field of the message_instance
+                receiver_user = User.objects.get(username=receiver_username)
+                                # Create a conversation if it doesn't exist
+                conversation = Conversation.objects.filter(participants=receiver_user).filter(participants=product.user).first()
+                
+                for participant in conversation.participants.all():
+                    print(participant.username)
+                
                 message_instance.receiver = receiver_user
-                
-                
+                message_instance.conversation = conversation
                 message_instance.save()
-                messages.success(request, 'Message send successfully')
-                return JsonResponse({'status': 'ok'})  # Return a JSON response
 
-        
-            else:	
+
+                
+
+                messages.success(request, 'Message sent successfully')
+                return JsonResponse({'status': 'ok'})
+            else:
                 print(form.errors)
-                messages.error(request, 'Message not send successfully')
-
+                messages.error(request, 'Message not sent successfully')
         else:
-          
             form = MessageForm(request.POST)
-       
-        
 
             if form.is_valid():
                 message_instance = form.save(commit=False)
-                message_instance.sender = request.user  # Assign the current user as the sender
+                message_instance.sender = request.user
                 message_instance.product = product
+                message_instance.receiver = product.user
+                conversation = Conversation.objects.filter(participants=request.user).filter(participants=product.user).first()
+
+                if conversation is None:
+                    # If no conversation exists, create a new one
+                    conversation = Conversation.objects.create()
+                    conversation.participants.add(request.user, product.user)
+                message_instance.conversation = conversation
                 
-                message_instance.receiver = product.user  # Assign the product's user as the receiver
                 message_instance.save()
-                messages.success(request, 'Message send successfully')
-            
-            else:	
-                messages.error(request, 'Message not send successfully')
+                
+                # Create a conversation between the sender and product user
+
+
+                messages.success(request, 'Message sent successfully')
+            else:
+                messages.error(request, 'Message not sent successfully')
 
     else:
         form = MessageForm()
@@ -72,29 +83,8 @@ def create_message(request, product_slug):
 
 def message_list(request):
     current_user = request.user
-    unread_messages = (
-        Message.objects
-        .filter(Q(receiver=current_user, read=False) | Q(sender=current_user, read=False))
-        .order_by('-created_at')
-        .select_related('product', 'sender')
-    )
-    read_messages = (
-        Message.objects
-        .filter(Q(receiver=current_user, read=True) | Q(sender=current_user, read=True))
-        .order_by('-created_at')
-        .select_related('product', 'sender')
-    )
-    all_messages = list(unread_messages) + list(read_messages)
-    
-    grouped_messages = {}
-    for message in all_messages:
-        key = (message.product, message.sender)
-        if key not in grouped_messages:
-            grouped_messages[key] = []
-        grouped_messages[key].append(message)
-
-    return render(request, 'messages/message-list.html', {'grouped_messages': grouped_messages})
-
+    conversations = Conversation.objects.filter(participants=current_user)
+    return render(request, 'messages/message-list.html', {'conversations': conversations})
 
 def message_detail(request, pk):
     message = get_object_or_404(Message, pk=pk)
@@ -102,13 +92,13 @@ def message_detail(request, pk):
     message.save()
     return JsonResponse({'status': 'success'})
 
-def delete_message(request, message_id):
+def delete_conversation(request, conversation_id):
     try:
-        message = Message.objects.get(pk=message_id)
-        message.delete()
-        messages.success(request, 'Message deleted successfully')
+        conversation = Conversation.objects.get(id=conversation_id)
+        conversation.delete()
+        messages.success(request, "Conversation deleted successfully.")
     except Message.DoesNotExist:
-        messages.error(request, 'Message not found')
+        messages.error(request, "Conversation does not exist.")
 
     return JsonResponse({'status': 'ok'})  # Return a JSON response
 
