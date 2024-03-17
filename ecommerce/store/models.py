@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.template.defaultfilters import slugify
 
 from django.contrib.auth.models import User
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 
@@ -52,3 +52,12 @@ class Product(models.Model):
 class Images(models.Model):
     product = models.ForeignKey(Product, default=None,on_delete=models.CASCADE,  related_name='images')
     image = models.ImageField(upload_to='images')
+
+
+
+class ProductReview(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField(default=0, null=True)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)

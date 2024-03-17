@@ -1,0 +1,50 @@
+<!-- edit_review.html -->
+{% extends "./base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h1>Edit Review</h1>
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <!-- Star rating input -->
+        <fieldset class="starability-grow">
+            <legend>Your rating:</legend>
+            <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
+            <input type="radio" id="rate1" name="rating" value="1" {% if form.instance.rating == 1 %}checked{% endif %} />
+            <label for="rate1" title="Terrible">1 star</label>
+            <input type="radio" id="rate2" name="rating" value="2" {% if form.instance.rating == 2 %}checked{% endif %} />
+            <label for="rate2" title="Not good">2 stars</label>
+            <input type="radio" id="rate3" name="rating" value="3" {% if form.instance.rating == 3 %}checked{% endif %} />
+            <label for="rate3" title="Average">3 stars</label>
+            <input type="radio" id="rate4" name="rating" value="4" {% if form.instance.rating == 4 %}checked{% endif %} />
+            <label for="rate4" title="Very good">4 stars</label>
+            <input type="radio" id="rate5" name="rating" value="5" {% if form.instance.rating == 5 %}checked{% endif %} />
+            <label for="rate5" title="Amazing">5 stars</label>
+        </fieldset>
+        <!-- Review content -->
+        <div>
+            <label for="review_content">Your Review:</label><br>
+            <textarea id="review_content" name="content" rows="4" cols="50">{{ form.instance.content }}</textarea>
+        </div>
+        <br>
+        <button type="submit">Update Review</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Starability script -->
+<script src="{% static 'js/starability-minified.js' %}"></script>
+<script>
+    // Initialize Starability plugin
+    starability('.starability-grow');
+</script>
+{% endblock %}

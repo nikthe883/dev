@@ -86,6 +86,8 @@
                                     <i class="fa fa-plus" aria-hidden="true"></i> &nbsp; Add to cart 
                             
                                 </button> 
+
+                                <a href="{% url 'product-review' product_id=product.id %}" class="btn btn-primary mt-3">Write a review</a>
                             
 
                             </div>
@@ -103,6 +105,23 @@
     </main>
 
     <br>
+    <h2>Reviews</h2>
+    {% if reviews %}
+        <ul>
+            {% for review in product.reviews.all %}
+            <div>
+                <p>Rating: {{ review.rating }}</p>
+                <p>Content: {{ review.content }}</p>
+                <!-- Show edit button only if the current user is the author of the review -->
+                {% if user.is_authenticated and review.author == user %}
+                <a href="{% url 'edit-review' review_id=review.pk %}" class="btn btn-primary">Edit Review</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No reviews available for this product yet.</p>
+    {% endif %}
 
 </div>
 
