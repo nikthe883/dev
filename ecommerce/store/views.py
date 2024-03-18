@@ -103,7 +103,7 @@ class ProductSearch(ListView):
     def get_queryset(self):
         query = self.request.GET.get('query')
         if query:
-            return Product.objects.filter(title__icontains=query)
+            return Product.objects.filter(title__icontains=query).select_related('category')
         return Product.objects.none()
 
 

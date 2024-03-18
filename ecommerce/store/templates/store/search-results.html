@@ -7,13 +7,13 @@
 
 
 <main>
-  
-  <div class="album py-5 bg-light">
 
+  <div class="album py-5 bg-light">
+    {% if search_results %}
 
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
-
-      
+    
+        <hr>
         {% for product in search_results %}
 
         <div class="col">
@@ -32,9 +32,12 @@
         </div>
 
         {% endfor %}
-
+    
       </div>
     </div>
+    {% else %}
+    <h1 style="text-align: center;">No products found</h1>
+    {% endif %}
   </div>
 
 

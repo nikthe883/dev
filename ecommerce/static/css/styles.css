@@ -12,7 +12,6 @@
   }
 
 
-
   .dropdown:hover > .dropdown-menu,
   .dropend:hover > .dropdown-menu {
     display: block;
@@ -20,9 +19,6 @@
     margin-left: 0.125em;
   }
 
-.input-group{
-    padding-left: 20rem;
-}
 
 
 
