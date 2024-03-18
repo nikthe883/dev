@@ -4,6 +4,7 @@ from django.urls import path
 from .views import ProductReviewCreateView,ReviewUpdateView
 
 from . import views
+from .views import ProductSearch
 
 urlpatterns = [
 
@@ -26,6 +27,7 @@ urlpatterns = [
 
     path('edit-review/<int:review_id>/', ReviewUpdateView.as_view(), name='edit-review'),
 
+    path('search/', ProductSearch.as_view(), name='search-results'),  
 
 
 ]

@@ -90,10 +90,6 @@ urlpatterns = [
 
     path('product/<slug:slug>/update/', UserProductUpdateView.as_view(), name='update-product'),
 
-
-
-
-
 ]
 
 

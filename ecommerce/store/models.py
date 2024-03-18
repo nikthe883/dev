@@ -6,6 +6,7 @@ from django.template.defaultfilters import slugify
 
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 
 
 
@@ -13,6 +14,14 @@ class Category(models.Model):
 
     name = models.CharField(max_length=250, db_index=True)
     slug = models.SlugField(max_length=250, unique=True)
+    # sub categories
+    parent = models.ForeignKey(
+    "Category",
+    on_delete=models.CASCADE,
+    null=True,
+    blank=True,
+    related_name="sub_categories",
+)
     
     class Meta:
         verbose_name_plural = 'categories'
@@ -22,6 +31,7 @@ class Category(models.Model):
 
     def get_absolute_url(self):
         return reverse('list-category', args=[self.slug])
+    
 
 
 class Product(models.Model):

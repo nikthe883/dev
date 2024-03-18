@@ -4,10 +4,12 @@ from django.urls import reverse_lazy
 from . models import Category, Product, ProductReview
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
-from .forms import ProductReviewForm
+from .forms import ProductReviewForm, ProductSearchForm
 from django.views.generic import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView
+from django.db.models import Q
+from django.views.generic import ListView
 
 class ProductReviewCreateView(LoginRequiredMixin, CreateView):
     model = ProductReview
@@ -66,10 +68,8 @@ def store(request):
 
 
 def categories(request):
-
-    all_categories = Category.objects.all()
-
-    return {'all_categories': all_categories}
+    categories = Category.objects.all()
+    return {'categories': categories}
 
 
 
@@ -95,7 +95,16 @@ def product_info(request, product_slug):
 
 
 
+class ProductSearch(ListView):
+    model = Product
+    template_name = 'store/search-results.html'
+    context_object_name = 'search_results'
 
+    def get_queryset(self):
+        query = self.request.GET.get('query')
+        if query:
+            return Product.objects.filter(title__icontains=query)
+        return Product.objects.none()
 
 
 
