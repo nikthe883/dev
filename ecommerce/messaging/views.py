@@ -10,6 +10,8 @@ from django.db.models import Q
 
 from django.db import transaction
 
+from django.views.decorators.http import require_POST
+
 @transaction.atomic
 def create_message(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
@@ -81,17 +83,14 @@ def create_message(request, product_slug):
     return render(request, 'messages/create-message.html', {'form': form})
 
 
+
 def message_list(request):
     current_user = request.user
     conversations = Conversation.objects.filter(participants=current_user)
     return render(request, 'messages/message-list.html', {'conversations': conversations})
 
-def message_detail(request, pk):
-    message = get_object_or_404(Message, pk=pk)
-    message.read = True
-    message.save()
-    return JsonResponse({'status': 'success'})
 
+@require_POST
 def delete_conversation(request, conversation_id):
     try:
         conversation = Conversation.objects.get(id=conversation_id)
@@ -102,3 +101,19 @@ def delete_conversation(request, conversation_id):
 
     return JsonResponse({'status': 'ok'})  # Return a JSON response
 
+require_POST
+def mark_conversation_messages_read(request, conversation_id):
+    print(conversation_id)
+    try:
+        # Get the conversation
+        conversation = Conversation.objects.get(pk=conversation_id)
+        
+        # Filter messages by conversation
+        messages = conversation.messages.all()
+        
+        # Mark all messages as read
+        messages.update(read=True)
+
+        return JsonResponse({'success': True})  # Return success response
+    except Conversation.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Conversation not found'}, status=404)

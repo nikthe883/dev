@@ -49,64 +49,85 @@
                 {{ participant.username }}
             {% endif %}
         {% endfor %}
+
     </h2>
-    <ul>
-        {% for message in conversation.messages.all %}
-            <li>{{ message.sender.username }}: {{ message.body }}</li>
-         
-        {% endfor %}
-    </ul>
-    <div>
-        {{ conversation.messages.first.sender.username }}
-        <input type="text" id="message-input-{{ conversation.messages.first.sender.username }}" placeholder="Enter your message...">
-        <button onclick="respond('{{ conversation.messages.first.product.slug }}', '{{ conversation.messages.first.subject }}', '{{ conversation.messages.first.sender.username }}')">Respond</button>
-    </div>
-    {{conversation.pk }}
-    <!-- Delete conversation -->
-    <button onclick="deleteMessage('{{conversation.pk }}')">Delete</button>
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"  onclick="markConversationMessagesRead({{conversation.id}})" >
+        Show conversation details
+      </a>
+      <br>
+      <br>
+      <br>
+
+      <div class="collapse" id="collapseExample">
+        <ul>
+          
+            
+            {% for message in conversation.messages.all %}
+          
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        {% if user != message.sender %}
+        
+                        <div class="alert alert-secondary" role="alert">
+                            <p class="text-start">{{ message.body }}</p>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-success" role="alert">
+                            <p class="text-end">{{ message.body }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+              
+            
+            {% endfor %}
+        </ul>
+        <div>
+     
+            <input type="text" id="message-input-{{ conversation.messages.first.sender.username }}" placeholder="Enter your message...">
+            <button onclick="respond('{{ conversation.messages.first.product.slug }}', '{{ conversation.messages.first.subject }}', '{{ conversation.messages.first.sender.username }}')">Respond</button>
+        
+      
+            <!-- Delete conversation -->
+            <button onclick="deleteMessage('{{conversation.pk }}')">Delete</button>
+        </div>
+        </div>
+
 {% endfor %}
+
+
     <script>
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const messageHeaders = document.querySelectorAll('.message-header');
-            const messages = document.querySelectorAll('.message');
-            
-            messageHeaders.forEach(header => {
-                header.addEventListener('click', function() {
-                    const contentId = this.getAttribute('data-content-id');
-                    const content = document.getElementById(contentId);
-                    const optionsId = 'options-' + this.getAttribute('data-message-id');
-                    const options = document.getElementById(optionsId);
-
-                    const messageId = this.getAttribute('data-message-id');
-
-                    const csrftoken = getCookie('csrftoken');
-
-                    
-
-                    fetch(`message-detail/${messageId}/`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': csrftoken
-                        }
-                    })
-
-
-                    // Toggle the visibility of the message content
-                    if (content.style.display === 'none') {
-                        content.style.display = 'block';
-                        options.style.display = 'block';
-                       
-                        
-                    } else {
-                        content.style.display = 'none';
-                        options.style.display = 'none';
-                        
-                    }
-                });
+        function markConversationMessagesRead(convID) {
+            // Retrieve the conversation ID from the button or from your data attribute
+            var conversationId = convID; // Replace 123 with the actual conversation ID
+            const csrftoken = getCookie('csrftoken');
+            // Send a POST request to mark all messages in the conversation as read
+            fetch(`mark-conversation-messages-read/${conversationId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add CSRF token if required
+                    'X-CSRFToken': csrftoken
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('All messages in the conversation marked as read successfully');
+                    // Optionally, update the UI to reflect the changes
+                } else {
+                    console.error('Failed to mark all messages in the conversation as read', response);
+                    // Optionally, handle error response
+                }
+            })
+            .catch(error => {
+                console.error('Error marking all messages in the conversation as read:', error);
+                // Optionally, handle network errors
             });
-        });
+        }
 
 
         function respond(productSlug, subject, receiver) {
