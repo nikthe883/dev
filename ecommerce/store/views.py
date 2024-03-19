@@ -9,7 +9,11 @@ from django.views.generic import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView
 from django.db.models import Q
-from django.views.generic import ListView
+from django.views.generic import ListView, View
+from django.http import HttpResponse
+
+
+from messaging.models import Message
 
 class ProductReviewCreateView(LoginRequiredMixin, CreateView):
     model = ProductReview
@@ -57,6 +61,7 @@ class ReviewUpdateView(LoginRequiredMixin, UpdateView):
         messages.error(self.request, 'Failed to update review. Please check your input.')
         return super().form_invalid(form)
 
+    
 def store(request):
 
     all_products = Product.objects.all()

@@ -108,12 +108,7 @@
 
         </ul>
 
-        <form action="{% url 'search-results' %}" method="get">
-            <div class="input-group">
-                <input name="query" type="search" class="form-control rounded" placeholder="Search..." aria-label="Search" aria-describedby="search-addon" />
-                <button type="submit" class="btn btn-alert navbar-btn text-white" data-mdb-ripple-init>Search</button>
-            </div>
-        </form>
+
 
     </div>
  
@@ -121,8 +116,16 @@
 
 
     <div class="collapse navbar-collapse text-center" id="navbarNavDropdown">
+        <br>
+        
+            <form action="{% url 'search-results' %}" method="get" class="d-flex justify-content-center justify-content-md-start" style="margin-left: 3em; margin-right: 3em;">
+                <input name="query" type="search" class="form-control me-2" placeholder="Search..."
+                    aria-label="Search">
+                <button type="submit" class="btn btn-outline-light">Search</button>
+            </form>
+       
 
-
+        <br>
 
         <ul class="navbar-nav ms-auto">
 
@@ -137,9 +140,11 @@
             <li class="nav-item">
 
                 <a class="btn btn-alert navbar-btn text-white" type="button" href="{% url 'message-list' %}"> <i
-                        class="fa fa-home" aria-hidden="true"></i> &nbsp; Messages </a>
+                        class="fa fa-comment" aria-hidden="true"></i> &nbsp; Messages </a>
 
             </li>
+            {{user.message.body}}
+  
 
 
             {% else %}
