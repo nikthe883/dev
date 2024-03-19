@@ -115,9 +115,9 @@ class ProductSearch(ListView):
 
 
 def check_unread_messages(request):
-    if request.user.is_authenticated:
-        has_unread_messages = Message.objects.filter(receiver=request.user, read=False).exists()
-    else:
-        has_unread_messages = False
+
+    has_unread_messages = Message.objects.filter(receiver=request.user, read_receiver=False).exists()
+    print(request.user)
+
 
     return JsonResponse({'has_unread_messages': has_unread_messages})

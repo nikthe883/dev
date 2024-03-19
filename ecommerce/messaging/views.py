@@ -22,7 +22,7 @@ def create_message(request, product_slug):
                 data = json.loads(request.body)
             except json.JSONDecodeError:
                 return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-            
+       
             form = MessageForm(dict(list(data.items())[:2]))
 
             if form.is_valid():
@@ -43,10 +43,7 @@ def create_message(request, product_slug):
                 message_instance.receiver = receiver_user
                 message_instance.conversation = conversation
                 message_instance.save()
-
-
-                
-
+                print(message_instance.receiver, message_instance.sender)
                 messages.success(request, 'Message sent successfully')
                 return JsonResponse({'status': 'ok'})
             else:
@@ -90,7 +87,7 @@ def message_list(request):
     return render(request, 'messages/message-list.html', {'conversations': conversations})
 
 
-@require_POST
+
 def delete_conversation(request, conversation_id):
     try:
         conversation = Conversation.objects.get(id=conversation_id)
@@ -112,7 +109,14 @@ def mark_conversation_messages_read(request, conversation_id):
         messages = conversation.messages.all()
         
         # Mark all messages as read
-        messages.update(read=True)
+        for message in messages:
+            if request.user == message.sender:
+                message.read_sender = True
+            elif request.user == message.receiver:
+                message.read_receiver = True
+
+            print(message.sender, message.receiver, message.read_sender,message.read_receiver)
+            message.save()
 
         return JsonResponse({'success': True})  # Return success response
     except Conversation.DoesNotExist:

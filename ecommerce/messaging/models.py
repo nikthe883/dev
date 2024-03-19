@@ -14,7 +14,8 @@ class Message(models.Model):
     subject = models.CharField(max_length=200)
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    read = models.BooleanField(default=False)  
+    read_sender = models.BooleanField(default=False)  
+    read_receiver = models.BooleanField(default=False)
 
 
     def __str__(self):

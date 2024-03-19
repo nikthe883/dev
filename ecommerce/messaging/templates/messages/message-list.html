@@ -86,9 +86,9 @@
             {% endfor %}
         </ul>
         <div>
-     
-            <input type="text" id="message-input-{{ conversation.messages.first.sender.username }}" placeholder="Enter your message...">
-            <button onclick="respond('{{ conversation.messages.first.product.slug }}', '{{ conversation.messages.first.subject }}', '{{ conversation.messages.first.sender.username }}')">Respond</button>
+            {{ conversation.messages.first.receiver.username }}
+            <input type="text" id="message-input-{{ conversation.messages.first.receiver.username }}" placeholder="Enter your message...">
+            <button onclick="respond('{{ conversation.messages.first.product.slug }}', '{{ conversation.messages.first.subject }}', '{{ conversation.messages.first.receiver.username }}')">Respond</button>
         
       
             <!-- Delete conversation -->
