@@ -10,8 +10,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView
 from django.db.models import Q
 from django.views.generic import ListView, View
-from django.http import HttpResponse
 
+from django.http import JsonResponse
 
 from messaging.models import Message
 
@@ -60,6 +60,7 @@ class ReviewUpdateView(LoginRequiredMixin, UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to update review. Please check your input.')
         return super().form_invalid(form)
+
 
     
 def store(request):
@@ -113,3 +114,10 @@ class ProductSearch(ListView):
 
 
 
+def check_unread_messages(request):
+    if request.user.is_authenticated:
+        has_unread_messages = Message.objects.filter(receiver=request.user, read=False).exists()
+    else:
+        has_unread_messages = False
+
+    return JsonResponse({'has_unread_messages': has_unread_messages})

@@ -139,11 +139,11 @@
             </li>
             <li class="nav-item">
 
-                <a class="btn btn-alert navbar-btn text-white" type="button" href="{% url 'message-list' %}"> <i
+                <a class="btn btn-alert navbar-btn text-white" type="button" href="{% url 'message-list' %}" id="message-container"> <i
                         class="fa fa-comment" aria-hidden="true"></i> &nbsp; Messages </a>
 
             </li>
-            {{user.message.body}}
+            
   
 
 
@@ -241,6 +241,31 @@
 
 
 <script src="{% static 'js/app.js' %}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    fetch("/check-new-messages/")
+    .then(function(response) {
+        if (response.ok) {
+            return response.json();  // Parse the JSON response
+        } else {
+            throw new Error('Request failed with status:', response.status);
+        }
+    })
+    .then(function(data) {
+        if (data.has_unread_messages) {
+            // Display notification for unread messages
+            showMessage();
+        }
+    })
+    .catch(function(error) {
+        console.error('Error:', error);
+    });
+});
 
-
+function showMessage() {
+    const messageContainer = document.getElementById('message-container');
+    // Update the inner HTML of the message container with the message text
+    messageContainer.innerHTML = '<i class="fa fa-exclamation" aria-hidden="true" style="color: red;"></i> &nbsp; Messages </a>';
+}
+    </script>
 </html>

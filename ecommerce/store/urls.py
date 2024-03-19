@@ -29,6 +29,8 @@ urlpatterns = [
 
     path('search/', ProductSearch.as_view(), name='search-results'),  
 
+    path('check-new-messages/', views.check_unread_messages, name='check_new_messages'),
+
 
 ]
 
