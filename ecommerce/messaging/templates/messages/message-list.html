@@ -46,12 +46,12 @@
     <h2>Conversation with 
         {% for participant in conversation.participants.all %}
             {% if participant.id != request.user.id %}
-                {{ participant.username }}
+                {{ participant.username }} About {{conversation.subject}}
             {% endif %}
         {% endfor %}
 
     </h2>
-    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"  onclick="markConversationMessagesRead({{conversation.id}})" >
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"  onclick="markConversationMessagesRead('{{conversation.id}}')" >
         Show conversation details
       </a>
       <br>
@@ -80,17 +80,28 @@
                     </div>
                 </div>
             </div>
-            
-              
-            
             {% endfor %}
         </ul>
         <div>
-            {{ conversation.messages.first.receiver.username }}
-            <input type="text" id="message-input-{{ conversation.messages.first.receiver.username }}" placeholder="Enter your message...">
-            <button onclick="respond('{{ conversation.messages.first.product.slug }}', '{{ conversation.messages.first.subject }}', '{{ conversation.messages.first.receiver.username }}')">Respond</button>
-        
-      
+            {% if user.username == conversation.messages.last.receiver.username %}
+            <div class="container">
+            <div class="row justify-content-center">
+              <div class="input-group border border-primary border border-2">
+                <textarea class="form-control" maxlength="500" aria-label="With textarea"></textarea>
+                
+              </div>
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button">Button</button>
+              </div>
+            </div>
+        </div>
+
+            <input type="text" id="message-input-{{ conversation.messages.last.sender.username }}" placeholder="Enter your message...">
+            <button onclick="respond('{{ conversation.messages.first.product.slug }}', '{{ conversation.messages.first.subject }}', '{{ conversation.messages.last.sender.username }}')">Respond</button>
+            {% else %}
+            <input type="text" id="message-input-{{ conversation.messages.last.receiver.username }}" placeholder="Enter your message...">
+            <button onclick="respond('{{ conversation.messages.first.product.slug }}', '{{ conversation.messages.first.subject }}', '{{ conversation.messages.last.receiver.username }}')">Respond</button>
+            {% endif %}
             <!-- Delete conversation -->
             <button onclick="deleteMessage('{{conversation.pk }}')">Delete</button>
         </div>
