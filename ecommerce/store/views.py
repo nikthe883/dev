@@ -117,7 +117,4 @@ class ProductSearch(ListView):
 def check_unread_messages(request):
 
     has_unread_messages = Message.objects.filter(receiver=request.user, read_receiver=False).exists()
-    print(request.user)
-
-
     return JsonResponse({'has_unread_messages': has_unread_messages})

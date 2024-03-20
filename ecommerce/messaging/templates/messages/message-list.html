@@ -46,25 +46,26 @@
     <h2>Conversation with 
         {% for participant in conversation.participants.all %}
             {% if participant.id != request.user.id %}
-                {{ participant.username }} About {{conversation.subject}}
+                {{ participant.username }} About {{conversation.messages.first.subject}}
             {% endif %}
         {% endfor %}
 
     </h2>
-    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"  onclick="markConversationMessagesRead('{{conversation.id}}')" >
-        Show conversation details
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+     aria-controls="collapseExample"  onclick="markConversationMessagesRead('{{conversation.id}}')" id="message-container" >
+        <i class="fa fa-comment" aria-hidden="true"></i> &nbsp; Show conversation details 
       </a>
       <br>
       <br>
       <br>
 
-      <div class="collapse" id="collapseExample">
-        <ul>
+      <div class="collapse container" id="collapseExample">
+   
           
             
             {% for message in conversation.messages.all %}
           
-            <div class="container">
+            
                 <div class="row justify-content-center">
                     <div class="col-md-6">
                         {% if user != message.sender %}
@@ -79,31 +80,38 @@
                         {% endif %}
                     </div>
                 </div>
-            </div>
+         
             {% endfor %}
-        </ul>
+      
         <div>
             {% if user.username == conversation.messages.last.receiver.username %}
-            <div class="container">
-            <div class="row justify-content-center">
-              <div class="input-group border border-primary border border-2">
-                <textarea class="form-control" maxlength="500" aria-label="With textarea"></textarea>
+           
+            <div class="row justify-content-center ">
+              <div class="input-group border border-primary border border-2 w-50 p-3 mw-100">
+                <textarea class="form-control" maxlength="250" aria-label="With textarea" style="resize:none;" id="message-input-{{ conversation.messages.last.sender.username }}" placeholder="Enter your message..."></textarea>
                 
               </div>
-              <div class="input-group-append">
-                <button class="btn btn-primary" type="button">Button</button>
+              <div class="row justify-content-center ">
+              <div class="input-group-append" style="margin: 1rem;">
+                <button onclick="respond('{{ conversation.messages.first.product.slug }}', '{{ conversation.messages.first.subject }}', '{{ conversation.messages.last.sender.username }}')" class="btn btn-primary" type="button">Respond</button>
+                <button onclick="deleteMessage('{{conversation.pk }}')" class="btn btn-danger" type="button">Delete</button>
+              </div>
               </div>
             </div>
-        </div>
-
-            <input type="text" id="message-input-{{ conversation.messages.last.sender.username }}" placeholder="Enter your message...">
-            <button onclick="respond('{{ conversation.messages.first.product.slug }}', '{{ conversation.messages.first.subject }}', '{{ conversation.messages.last.sender.username }}')">Respond</button>
             {% else %}
-            <input type="text" id="message-input-{{ conversation.messages.last.receiver.username }}" placeholder="Enter your message...">
-            <button onclick="respond('{{ conversation.messages.first.product.slug }}', '{{ conversation.messages.first.subject }}', '{{ conversation.messages.last.receiver.username }}')">Respond</button>
+            <div class="row justify-content-center ">
+                <div class="input-group border border-primary border border-2 w-50 p-3 mw-100">
+                  <textarea class="form-control" maxlength="250" aria-label="With textarea" style="resize:none;" id="message-input-{{ conversation.messages.last.receiver.username }}" placeholder="Enter your message..."></textarea>
+                  
+                </div>
+                <div class="row justify-content-center ">
+                <div class="input-group-append" style="margin: 1rem;">
+                  <button onclick="respond('{{ conversation.messages.first.product.slug }}', '{{ conversation.messages.first.subject }}', '{{ conversation.messages.last.receiver.username }}')" class="btn btn-primary" type="button">Respond</button>
+                  <button onclick="deleteMessage('{{conversation.pk }}')" class="btn btn-danger" type="button">Delete</button>
+                </div>
+                </div>
+              </div>
             {% endif %}
-            <!-- Delete conversation -->
-            <button onclick="deleteMessage('{{conversation.pk }}')">Delete</button>
         </div>
         </div>
 
@@ -111,6 +119,36 @@
 
 
     <script>
+
+            document.addEventListener("DOMContentLoaded", function() {
+                fetch("/check-new-messages/")
+                .then(function(response) {
+                    if (response.ok) {
+                        
+                        return response.json();  // Parse the JSON response
+                    } else {
+                        throw new Error('Request failed with status:', response.status);
+                    }
+                })
+                .then(function(data) {
+                    if (data.has_unread_messages) {
+                       
+                        // Display notification for unread messages
+                        showMessage();
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Error:', error);
+                });
+            });
+
+            function showMessage() {
+                
+                const messageContainer = document.getElementById('message-container');
+                
+                // Update the inner HTML of the message container with the message text
+                messageContainer.innerHTML = '<i class="fa fa-comment" aria-hidden="true" style="color: red;"></i> &nbsp; Messages';
+            }
 
         function markConversationMessagesRead(convID) {
             // Retrieve the conversation ID from the button or from your data attribute
