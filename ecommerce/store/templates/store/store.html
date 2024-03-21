@@ -61,20 +61,31 @@
             
             {% for product in my_products %}
 
-    
-              <div class="col">
-                
-                <div class="card shadow-sm">
-                
-                  {% if product.images.all %}
-              
-              {% for image in product.images.all %}
-
-                      <img class="img-fluid" alt="Responsive image" src="{{ image.image.url }}">
-                  {% endfor %}
-                  {% else %}
             
-                  <img class="img-fluid" alt="Responsive image" src="{% static 'placeholder.jpg' %}">
+              <div class="col ">
+                
+                <div class="card shadow-sm ">
+
+       
+                
+              {% if product.images.all %}
+              
+              
+
+
+              <div id="carouselExampleControls" class="carousel slide " data-ride="carousel">
+                <div class="carousel-inner rounded">
+                  {% for image in product.images.all %}
+                  <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <a href="{{product.get_absolute_url}}"><img class="d-block w-100" src="{{ image.image.url }}" alt="Slide {{ forloop.counter }}" 
+                      width="100%" height="190"></a>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+                  {% else %}
+                  <a href="{{product.get_absolute_url}}">
+                  <img class="d-block w-100 rounded" src="{% static 'placeholder.jpg' %}" alt="Placeholder" width="100%" height="190"></a>
               {% endif %}
                 
                   <div class="card-body">
