@@ -14,21 +14,28 @@ class Command(BaseCommand):
         fake = Faker()
         categories = Category.objects.all()
         users = User.objects.all()
+        
+        products_to_create = []
 
         for _ in range(1000):  # Change 1000 to the number of products you want to create
             category = random.choice(categories)
             user = random.choice(users)
-            title = fake.text(max_nb_chars=50)
+            title = fake.word()
             brand = fake.company()
             description = fake.paragraph()
             price = round(random.uniform(1, 1000), 2)
-            product = Product.objects.create(
+            product = Product(
                 category=category,
                 title=title,
                 brand=brand,
                 description=description,
                 price=price,
-                user=user
+                user=user,
+                slug=title
             )
-            product.save()
-            self.stdout.write(self.style.SUCCESS(f'Successfully created product: {product}'))
+            products_to_create.append(product)
+
+        # Bulk create products
+        Product.objects.bulk_create(products_to_create)
+
+        self.stdout.write(self.style.SUCCESS(f'Successfully created {len(products_to_create)} products'))
