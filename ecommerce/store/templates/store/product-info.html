@@ -36,7 +36,7 @@
                 <hr>
 
                 <br>
-                <a href="{% url 'create-message' product_slug=product.slug %}">Send message about {{ product.title }}</a>
+                
 
                 <p> {{ product.description }} </p>
 
@@ -54,47 +54,44 @@
 
                     </div>
 
-                    <div class="col">
-              
+                    
+                    <div class="col border-bottom">
                         <div class="row p-3">
-              
-                            <div class="col-6">
-              
-                               
-                                <label for="select">Qty</label>
-                                
-                                &nbsp; 
-                               
-                                <select id="select">
-              
-                                    <option value="1">1</option>
-              
-                                    <option value="2">2</option>
-              
-                                    <option value="3">3</option>
-              
-                                    <option value="4">4</option>
-              
-                                </select>
 
-                            </div>
+                           
+                            <div class="col-6 text-start">
 
-                            <div class="col-6 text-end">
-                                
-                                <button type="button" id="add-button" value="{{product.id}}" class="btn btn-secondary btn-sm">
-                        
-                                    <i class="fa fa-plus" aria-hidden="true"></i> &nbsp; Add to cart 
-                            
-                                </button> 
-
+                                {% if user.is_authenticated %}
                                 <a href="{% url 'product-review' product_id=product.id %}" class="btn btn-primary mt-3">Write a review</a>
-                            
+                                {% else %}
+                                <p>Login to you account to write a review</p>
+                                {% endif %}
+                                
 
                             </div>
-                        
                         </div>
-
                     </div>
+                        <div class="col border-bottom">
+                            <div class="row p-3">
+                                
+                                    <div class="col-6 text-start">
+
+                                        <p>Show seller contact details</p>
+                                
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row p-3">
+                                
+                                    <div class="col-6 text-start">
+                                        <a href="{% url 'create-message' product_slug=product.slug %}">Send message about {{ product.title }}</a>
+                                
+                                </div>
+                            </div>
+                        
+
+                    
 
                 </div>
 
