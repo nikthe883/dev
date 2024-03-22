@@ -10,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView
 from django.db.models import Q
 from django.views.generic import ListView, View
-
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 
 from messaging.models import Message
@@ -66,8 +66,11 @@ class ReviewUpdateView(LoginRequiredMixin, UpdateView):
 def store(request):
 
     all_products = Product.objects.all()
+    paginator = Paginator(all_products, 50)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-    context = {'my_products':all_products}
+    context = {'my_products':page_obj}
 
     return render(request, 'store/store.html', context)
 
