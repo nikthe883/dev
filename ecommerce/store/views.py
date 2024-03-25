@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from . models import Category, Product, ProductReview
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
-from .forms import ProductReviewForm, ProductSearchForm
+from .forms import ProductReviewForm
 from django.views.generic import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView
@@ -65,7 +65,7 @@ class ReviewUpdateView(LoginRequiredMixin, UpdateView):
     
 def store(request):
 
-    all_products = Product.objects.all()
+    all_products = Product.objects.order_by('title')
     paginator = Paginator(all_products, 50)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)

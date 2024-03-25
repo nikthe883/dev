@@ -10,5 +10,3 @@ class ProductReviewForm(forms.ModelForm):
     rating = forms.IntegerField(label='Rating', min_value=1, max_value=5)
 
 
-class ProductSearchForm(forms.Form):
-    query = forms.CharField(label='Search')

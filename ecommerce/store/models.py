@@ -43,6 +43,7 @@ class Product(models.Model):
     slug = models.SlugField(max_length=255)
     price = models.DecimalField(max_digits=9, decimal_places=2)
     user = models.ForeignKey(User, max_length=10, on_delete=models.CASCADE, null=True)
+    
 
     def save(self, *args, **kwargs):
         if not self.slug:

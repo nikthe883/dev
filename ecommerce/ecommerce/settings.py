@@ -43,8 +43,6 @@ INSTALLED_APPS = [
 
     'store', # Django app
 
-    'cart', # Django app
-
     'account', # Django app
 
     'messaging', # Django app
@@ -94,7 +92,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'store.views.categories', # Updated
-                'cart.context_processors.cart',
+                
 
             ],
         },
