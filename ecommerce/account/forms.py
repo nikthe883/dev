@@ -7,7 +7,7 @@ from django.forms import ModelForm, inlineformset_factory
 
 from django.forms.widgets import PasswordInput, TextInput
 
-from store.models import Product, Images
+from store.models import Product, Images,Category
 
 
 # Prodcut from
@@ -17,7 +17,7 @@ class CreateProductForm(ModelForm):
     class Meta:
         model = Product
         fields = ['category','title', 'brand', 'description', 'price']
-   
+
     def clean_title(self):
         title = self.cleaned_data.get('title')
         existing_product = Product.objects.filter(title__iexact=title).exclude(pk=self.instance.pk if self.instance else None).first()

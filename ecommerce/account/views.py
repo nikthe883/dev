@@ -35,7 +35,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
-
+import json
 
 
 @method_decorator(login_required(login_url='my-login'), name='dispatch')
@@ -81,6 +81,12 @@ class CreateProductView(CreateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        categories = Category.objects.all()
+        subcategories_data = {category.id: list(category.sub_categories.values('id', 'name')) for category in categories}
+        
+        context['subcategories_data'] = json.dumps(subcategories_data)
+        print(subcategories_data)
 
         if self.request.POST:
             formset = PostFormSet(self.request.POST, self.request.FILES, instance=self.object)

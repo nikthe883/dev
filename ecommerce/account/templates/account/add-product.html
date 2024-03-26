@@ -36,9 +36,9 @@
         <div class="container bg-white shadow-md p-5 form-layout">
             
 
-            <h3> <i class="fa fa-chevron-circle-right" aria-hidden="true"></i> &nbsp; Manage shipping </h3>
+            <h3> <i class="fa fa-chevron-circle-right" aria-hidden="true"></i> &nbsp; Add a product </h3>
 
-            <p> Please fill in your shipping address. </p>
+            <p> Please fill your product information </p>
 
             <hr>
 
@@ -47,16 +47,23 @@
             <form action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form | crispy }} 
+               <br>
 
                 {{ formset.management_form }}
-
-            {% for image_form in formset %}
-      
-                {{ image_form.image }}
-
-            {% endfor %}
+                {% for image_form in formset %}
+                <div class="input-group mb-3">
+                    <!-- Manually create the file input -->
+                    <input type="file" class="form-control" id="{{ image_form.image.id_for_label }}" name="{{ image_form.image.html_name }}" style="display: none;" onchange="updateFilename(this)">
+                    <!-- Custom button to trigger file input -->
+                    <div class="input-group-prepend">
+                        <button class="btn btn-outline-secondary custom-file-upload" type="button" onclick="document.getElementById('{{ image_form.image.id_for_label }}').click()">Choose File</button>
+                    </div>
+                    <!-- Container to display the filename -->
+                    <span class="input-group-text" id="filename-preview-{{ image_form.image.id_for_label }}"></span>
+                </div>
+                {% endfor %}
                 
-                <input type="submit" id="grade_csv" name="submit" value="Submit" />
+                <input class="btn btn-primary navbar-btn text-white" type="submit" id="grade_csv" name="submit" value="Submit" />
               </form>
 
 
@@ -69,6 +76,19 @@
 
     <br> <br>
 
-
+    <script>
+        function updateFilename(input) {
+            var filenamePreviewId = "filename-preview-" + input.id;
+            var filenamePreview = document.getElementById(filenamePreviewId);
+    
+            if (input.files && input.files[0]) {
+                var filename = input.files[0].name;
+                var truncatedFilename = filename.substring(0, 10); // Get first 10 characters
+                filenamePreview.textContent = truncatedFilename;
+            } else {
+                filenamePreview.textContent = "";
+            }
+        }
+    </script>
 {% endblock %}
 
