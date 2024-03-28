@@ -110,10 +110,17 @@ class ProductSearch(ListView):
     context_object_name = 'search_results'
 
     def get_queryset(self):
+        
+        myquery = self.request.GET.get('myquery')
         query = self.request.GET.get('query')
+        
         if query:
             return Product.objects.filter(title__icontains=query).select_related('category')
-        return Product.objects.none()
+        elif myquery:
+            user = self.request.user
+            return Product.objects.filter(title__icontains=myquery, user=user).select_related('category')
+        else:
+            return Product.objects.none()
 
 
 

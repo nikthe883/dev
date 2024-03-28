@@ -56,14 +56,15 @@
                     <input type="file" class="form-control" id="{{ image_form.image.id_for_label }}" name="{{ image_form.image.html_name }}" style="display: none;" onchange="updateFilename(this)">
                     <!-- Custom button to trigger file input -->
                     <div class="input-group-prepend">
-                        <button class="btn btn-outline-secondary custom-file-upload" type="button" onclick="document.getElementById('{{ image_form.image.id_for_label }}').click()">Choose File</button>
+                        <button class="btn btn-primary custom-file-upload" type="button" onclick="document.getElementById('{{ image_form.image.id_for_label }}').click()">Choose File</button>
                     </div>
                     <!-- Container to display the filename -->
                     <span class="input-group-text" id="filename-preview-{{ image_form.image.id_for_label }}"></span>
                 </div>
                 {% endfor %}
-                
+                <div class="text-center">
                 <input class="btn btn-primary navbar-btn text-white" type="submit" id="grade_csv" name="submit" value="Submit" />
+                </div>
               </form>
 
 

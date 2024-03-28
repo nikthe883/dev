@@ -7,78 +7,121 @@
 {% block content %}
 
 
-       <!-- All products section -->
-      
-       <div class="album py-5 bg-light">
+
+
+<div class="album py-5 bg-light">
         
-        <div class="container">
-    
-          <div class="pb-3 h5"> All my products </div>
+  <div class="container">
 
+    <div class="pb-3 h5"> All my products </div>
 
-          <hr>
+    <div class="w-50 mx-auto">
+      <form action="{% url 'search-results' %}" method="get" class="d-flex  justify-content-md-start" >
+        <input name="myquery" type="search" class="form-control me-2" placeholder="Search..."
+            aria-label="Search">
+        <button type="submit" class="btn btn-primary my-2">Search</button>
+    </form>
+    </div>
 
-          <br>
-          
+    <hr>
 
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
-    
-            
-            {% for product in my_products %}
-
-    
-              <div class="col">
-                
-                <div class="card shadow-sm">
-
-              {% if product.images.all %}
-              
-                {% for image in product.images.all %}
-                <p> There are images</p>
-                    <img class="img-fluid" alt="Responsive image" src="{{ image.image.url }}">
-                {% endfor %}
-            {% else %}
-            
-                <img class="img-fluid" alt="Responsive image" src="{% static 'placeholder.jpg' %}">
-            {% endif %}
-           
-                
-                
-                  <div class="card-body">
-                
-                    <p class="card-text">
-                
-                      <a class="text-info text-decoration-none" href="{{product.get_absolute_url}}"> {{ product.title | capfirst }} </a>
-                
-                    </p>
-                    <p class="card-text">
-                
-                      <a class="text-info text-decoration-none"  href="{% url 'update-product' slug=product.slug %}">Update Product</a>> {{ product.title | capfirst }} </a>
-                
-                    </p>
-                
-                    <div class="d-flex justify-content-between align-items-center">
-                
-                      <h5> $ {{ product.price }} </h5>
-                
-                    </div>
-                
-                  </div>
-                
-                </div>
-              
-              </div>
+    <br>
     
 
-            {% endfor %}
-            
-    
-          </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
 
-        </div>
       
-      </div>
+      {% for product in my_products %}
+       
+      
+        <div class="col ">
+          
+          <div class="card shadow-sm ">
 
+ 
+          
+        {% if product.images.all %}
+        
+        
+
+
+        <div id="carouselExampleControls" class="carousel slide " data-ride="carousel">
+          <div class="carousel-inner rounded">
+            {% for image in product.images.all %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+              <a href="{{product.get_absolute_url}}"><img class="d-block w-100" src="{{ image.image.url }}" alt="Slide {{ forloop.counter }}" 
+                width="100%" height="190"></a>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+            {% else %}
+            <a href="{{product.get_absolute_url}}">
+            <img class="d-block w-100 rounded" src="{% static 'placeholder.jpg' %}" alt="Placeholder" width="100%" height="190"></a>
+        {% endif %}
+          
+            <div class="card-body">
+          
+              <p class="card-text text-truncate">
+          
+                <a class="text-info text-decoration-none" href="{{product.get_absolute_url}}"> {{ product.title | capfirst }} </a>
+          
+              </p>
+              <p class="card-text text-truncate" >
+          
+                {{product.description | capfirst}}
+          
+              </p>
+          
+              <div class="d-flex justify-content-between align-items-center">
+          
+                <h5> $ {{ product.price }} </h5>
+          
+              </div>
+              <p class="card-text"> 
+                <a class=" text-white text-decoration-none btn btn-primary my-2"  href="{% url 'update-product' slug=product.slug %}">Update Product</a> 
+              </p>
+          
+            </div>
+          
+          </div>
+        
+        </div>
+
+
+      {% endfor %}
+      
+
+    </div>
+
+  </div>
+  <br>
+
+  <nav aria-label="...">
+    <ul class="pagination justify-content-center">
+      {% if my_products.has_previous %}
+      <li class="page-item">
+        <span class="page-link" href="?page={{ my_products.previous_page_number }}">Previous</span>
+      </li>
+     
+      <li class="page-item"><a class="page-link" href="?page={{ my_products.previous_page_number }}">{{ my_products.previous_page_number }}</a></li>
+      {% endif %}
+      <li class="page-item active">
+        <span class="page-link">
+          {{ my_products.number }}
+          <span class="sr-only">(current)</span>
+        </span>
+      </li>
+      {% if my_products.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ my_products.next_page_number }}">{{ my_products.next_page_number }}</a></li>
+      <li class="page-item">
+        <a class="page-link " href="?page={{ my_products.next_page_number }}">Next</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+
+</div>
 
 {% endblock %}
 
