@@ -70,7 +70,7 @@ def store(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    context = {'my_products':page_obj}
+    context = {'products':page_obj}
 
     return render(request, 'store/store.html', context)
 

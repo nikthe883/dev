@@ -70,7 +70,7 @@
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
     
             
-            {% for product in my_products %}
+            {% for product in products %}
              
             
               <div class="col ">
@@ -135,23 +135,23 @@
 
         <nav aria-label="...">
           <ul class="pagination justify-content-center">
-            {% if my_products.has_previous %}
+            {% if products.has_previous %}
             <li class="page-item">
-              <span class="page-link" href="?page={{ my_products.previous_page_number }}">Previous</span>
+              <span class="page-link" href="?page={{ products.previous_page_number }}">Previous</span>
             </li>
            
-            <li class="page-item"><a class="page-link" href="?page={{ my_products.previous_page_number }}">{{ my_products.previous_page_number }}</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ products.previous_page_number }}">{{ products.previous_page_number }}</a></li>
             {% endif %}
             <li class="page-item active">
               <span class="page-link">
-                {{ my_products.number }}
+                {{ products.number }}
                 <span class="sr-only">(current)</span>
               </span>
             </li>
-            {% if my_products.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ my_products.next_page_number }}">{{ my_products.next_page_number }}</a></li>
+            {% if products.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ products.next_page_number }}">{{ products.next_page_number }}</a></li>
             <li class="page-item">
-              <a class="page-link " href="?page={{ my_products.next_page_number }}">Next</a>
+              <a class="page-link " href="?page={{ products.next_page_number }}">Next</a>
             </li>
             {% endif %}
           </ul>

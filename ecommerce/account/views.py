@@ -36,7 +36,8 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
 import json
-
+from django.core.paginator import Paginator
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 @method_decorator(login_required(login_url='my-login'), name='dispatch')
 @method_decorator(csrf_protect, name='dispatch')
@@ -101,15 +102,26 @@ class CreateProductView(CreateView):
 
 @method_decorator(login_required(login_url='my-login'), name='dispatch')
 @method_decorator(csrf_protect, name='dispatch')
-class UserProductsView(ListView):
+class UserProductsView(LoginRequiredMixin, ListView):
     model = Product
     template_name = 'account/my-products.html'
     context_object_name = 'my_products'
-
+    paginate_by = 50
 
     def get_queryset(self):
-        current_user = self.request.user.id
-        return Product.objects.filter(user=current_user)
+        # Get the current logged-in user
+        current_user = self.request.user
+        # Filter products by the current user
+        my_products = Product.objects.filter(user=current_user)
+        return my_products
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        paginator = Paginator(context['object_list'], self.paginate_by)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context['my_products'] = page_obj
+        return context
 
 
 
