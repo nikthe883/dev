@@ -39,6 +39,7 @@ import json
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+
 @method_decorator(login_required(login_url='my-login'), name='dispatch')
 @method_decorator(csrf_protect, name='dispatch')
 class CreateProductView(CreateView):
@@ -53,8 +54,12 @@ class CreateProductView(CreateView):
         form.instance.user = self.request.user
         product = form.save(commit=False)
 
+        
+
         context = self.get_context_data()
         formset = context['formset']
+
+       
 
         if formset.is_valid() and form.is_valid:
             product.save()
@@ -152,24 +157,29 @@ class UserProductUpdateView(UpdateView):
         context = self.get_context_data()
         formset = context['formset']
 
-        print(formset.data,)  # Print formset data for debugging
+   
 
         if formset.is_valid():
             product.save()
-
-            if formset.total_form_count() > 0:  # Check if there are any images to process
-                for image_form in formset:
-                    if image_form.cleaned_data:
-                        image = image_form.save(commit=False)
-                        image.product = product
-                        image.save()
+            for image_form in formset:
+                if image_form.cleaned_data.get('DELETE'):
+                    print("de;etiomns")
+                    # Delete the image from the model
+                    if image_form.instance.pk:  # Ensure instance exists
+                        image_form.instance.delete()
+                elif image_form.cleaned_data:  # Save new or changed images
+                    image = image_form.save(commit=False)
+                    image.product = product
+                    image.save()
 
             messages.success(self.request, "The product was added successfully.")
             return super().form_valid(form)
-        print(formset.errors)
-        return self.form_invalid(form)
+        else:
+           
+            return self.form_invalid(form)
         
     def form_invalid(self, form):
+        
         messages.error(self.request, "Failed to add the product. Please check the formset.")
         return super().form_invalid(form)
     

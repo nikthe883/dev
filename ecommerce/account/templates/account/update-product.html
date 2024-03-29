@@ -45,72 +45,36 @@
             <br>
 
             <form action="" method="post" enctype="multipart/form-data">
-
                 {% csrf_token %}
                 {{ form|crispy }} <!-- Render the main form -->
-                
-            <br>
-
-            <br>
+                <br>
             
-            {% for image_form in formset %}
-         
-            <div class="card mb-3">
-                <div class="card-body">
-                    <!-- Render form fields for the image -->
-                    {{ image_form.as_p|safe }}
-        
+                {{ formset.management_form }}
+                {% for image_form in formset %}
+                
                     {% if image_form.instance.pk %}
+                   
+                    <input type="hidden" name="{{ formset.prefix }}-{{ forloop.counter0 }}-id" value="{{ image_form.instance.id }}">
                         <!-- Existing image information -->
-                        <img src="{{ image_form.instance.image.url }}" class="img-fluid mt-3" alt="Current Image">
-                        <div class="form-group mt-3">
-                            <!-- Provide option to delete the image -->
-                            <label class="form-check-label mr-3">
-                                <input type="checkbox" name="{{ image_form.DELETE_FIELD_NAME }}" class="form-check-input">
-                                Delete Current Image
-                            </label>
-                        </div>
-                        <!-- Provide option to change the image -->
+                        <img src="{{ image_form.instance.image.url }}" alt="Current Image">
+
+                        <label for="{{ image_form.DELETE_FIELD_NAME }}">Delete:</label>
+                        {{image_form.DELETE}}
+                    
+    
                         <div class="input-group mb-3">
                             <!-- Manually create the file input -->
-                            <input type="file" class="form-control" id="{{ image_form.image.id_for_label }}" name="{{ image_form.image.html_name }}" style="display: none;" onchange="updateFilename(this)">
-                            <!-- Custom button to trigger file input -->
-                            <div class="input-group-prepend">
-                                <button class="btn btn-primary" type="button" onclick="document.getElementById('{{ image_form.image.id_for_label }}').click()">Change Image</button>
-                            </div>
-                            <!-- Container to display the filename -->
+                            <input type="file" class="form-control " id="id_image_{{ forloop.counter }}" name="{{ image_form.image.html_name }}" onchange="updateFilename('filename-preview-{{ image_form.image.id_for_label }}')">
                             <span class="input-group-text" id="filename-preview-{{ image_form.image.id_for_label }}"></span>
                         </div>
-                    {% else %}
-                        <!-- New image form fields -->
-                        <input type="file" class="form-control mb-3" id="{{ image_form.image.id_for_label }}" name="{{ image_form.image.html_name }}" style="display: none;" onchange="updateFilename(this)">
-                        <div class="input-group-prepend">
-                            <button class="btn btn-primary" type="button" onclick="document.getElementById('{{ image_form.image.id_for_label }}').click()">Upload New Image</button>
-                        </div>
-                        <!-- Container to display the filename -->
-                        <span class="input-group-text" id="filename-preview-{{ image_form.image.id_for_label }}"></span>
                     {% endif %}
-                </div>
-            </div>
-        {% endfor %}
-
-            <form action="" method="post" enctype="multipart/form-data">
-             
-                
-               
-               <br>
-
-
-
+      
+                {% endfor %}
+            
                 <br>
-
-
-                <button type="submit" class="btn btn-primary navbar-btn text-white w-100 p-2"> Update product </button>
-
-
-
+                <button type="submit" class="btn btn-primary navbar-btn text-white w-100 p-2">Update Product</button>
             </form>
-
+            
 
 
         </div>
