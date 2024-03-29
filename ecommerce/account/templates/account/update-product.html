@@ -48,13 +48,59 @@
 
                 {% csrf_token %}
                 {{ form|crispy }} <!-- Render the main form -->
-                {{ formset.management_form }} <!-- Include formset management form -->
+                
+            <br>
+
+            <br>
             
-                {% for image_form in formset %}
-                    {{ image_form.id }}
-                {% endfor %}
-            
-                {{ formset|crispy }} <!-- Render the entire formset -->
+            {% for image_form in formset %}
+         
+            <div class="card mb-3">
+                <div class="card-body">
+                    <!-- Render form fields for the image -->
+                    {{ image_form.as_p|safe }}
+        
+                    {% if image_form.instance.pk %}
+                        <!-- Existing image information -->
+                        <img src="{{ image_form.instance.image.url }}" class="img-fluid mt-3" alt="Current Image">
+                        <div class="form-group mt-3">
+                            <!-- Provide option to delete the image -->
+                            <label class="form-check-label mr-3">
+                                <input type="checkbox" name="{{ image_form.DELETE_FIELD_NAME }}" class="form-check-input">
+                                Delete Current Image
+                            </label>
+                        </div>
+                        <!-- Provide option to change the image -->
+                        <div class="input-group mb-3">
+                            <!-- Manually create the file input -->
+                            <input type="file" class="form-control" id="{{ image_form.image.id_for_label }}" name="{{ image_form.image.html_name }}" style="display: none;" onchange="updateFilename(this)">
+                            <!-- Custom button to trigger file input -->
+                            <div class="input-group-prepend">
+                                <button class="btn btn-primary" type="button" onclick="document.getElementById('{{ image_form.image.id_for_label }}').click()">Change Image</button>
+                            </div>
+                            <!-- Container to display the filename -->
+                            <span class="input-group-text" id="filename-preview-{{ image_form.image.id_for_label }}"></span>
+                        </div>
+                    {% else %}
+                        <!-- New image form fields -->
+                        <input type="file" class="form-control mb-3" id="{{ image_form.image.id_for_label }}" name="{{ image_form.image.html_name }}" style="display: none;" onchange="updateFilename(this)">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-primary" type="button" onclick="document.getElementById('{{ image_form.image.id_for_label }}').click()">Upload New Image</button>
+                        </div>
+                        <!-- Container to display the filename -->
+                        <span class="input-group-text" id="filename-preview-{{ image_form.image.id_for_label }}"></span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+
+            <form action="" method="post" enctype="multipart/form-data">
+             
+                
+               
+               <br>
+
+
 
                 <br>
 
@@ -69,11 +115,26 @@
 
         </div>
 
-
+     
 
     </body>
 
     <br> <br>
+
+    <script>
+        function updateFilename(input) {
+            var filenamePreviewId = "filename-preview-" + input.id;
+            var filenamePreview = document.getElementById(filenamePreviewId);
+    
+            if (input.files && input.files[0]) {
+                var filename = input.files[0].name;
+                var truncatedFilename = filename.substring(0, 10); // Get first 10 characters
+                filenamePreview.textContent = truncatedFilename;
+            } else {
+                filenamePreview.textContent = "";
+            }
+        }
+    </script>
 
 
 {% endblock %}

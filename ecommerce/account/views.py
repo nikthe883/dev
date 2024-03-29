@@ -68,7 +68,6 @@ class CreateProductView(CreateView):
             messages.success(self.request, "The product was added successfully.")
             return super().form_valid(form)
         else:
-            messages.error(self.request, "Failed to add the product.")
             return self.form_invalid(form)
 
 
@@ -143,6 +142,7 @@ class UserProductUpdateView(UpdateView):
             formset = PostFormSet(instance=self.object)
 
         context['formset'] = formset
+        
         return context
     
     def form_valid(self, form):
@@ -158,22 +158,19 @@ class UserProductUpdateView(UpdateView):
             product.save()
 
             if formset.total_form_count() > 0:  # Check if there are any images to process
-                        for image_form in formset:
-                            if image_form.cleaned_data:
-                                image = image_form.save(commit=False)
-                                image.product = product
-                                image.save()
+                for image_form in formset:
+                    if image_form.cleaned_data:
+                        image = image_form.save(commit=False)
+                        image.product = product
+                        image.save()
 
             messages.success(self.request, "The product was added successfully.")
             return super().form_valid(form)
-        else:
-            print(formset.errors)
-            messages.error(self.request, "Failed to add the product. Please check the formset.")
-            
-            return self.form_invalid(form)
-
-    
+        print(formset.errors)
+        return self.form_invalid(form)
+        
     def form_invalid(self, form):
+        messages.error(self.request, "Failed to add the product. Please check the formset.")
         return super().form_invalid(form)
     
     def get_success_url(self) -> str:

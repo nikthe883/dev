@@ -47,10 +47,12 @@
             <form action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form | crispy }} 
+               
                <br>
 
                 {{ formset.management_form }}
                 {% for image_form in formset %}
+              
                 <div class="input-group mb-3">
                     <!-- Manually create the file input -->
                     <input type="file" class="form-control" id="{{ image_form.image.id_for_label }}" name="{{ image_form.image.html_name }}" style="display: none;" onchange="updateFilename(this)">
@@ -70,7 +72,6 @@
 
 
         </div>
-
 
 
     </body>
