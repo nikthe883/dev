@@ -53,20 +53,28 @@
                 {% for image_form in formset %}
                 
                     {% if image_form.instance.pk %}
-                   
+                    <div class="card-body">
                     <input type="hidden" name="{{ formset.prefix }}-{{ forloop.counter0 }}-id" value="{{ image_form.instance.id }}">
                         <!-- Existing image information -->
-                        <img src="{{ image_form.instance.image.url }}" alt="Current Image">
+                        <img class="d-block w-100" src="{{ image_form.instance.image.url }}" alt="Current Image" width="100%" height="190">
+                        <br>
+                        <div class="input-group-prepend">
 
-                        <label for="{{ image_form.DELETE_FIELD_NAME }}">Delete:</label>
-                        {{image_form.DELETE}}
-                    
-    
+                            <div class="input-group-text">
+                                 Delete 
+                                 <div class="position-relative top-50" style="padding-left: 1rem;">{{ image_form.DELETE }}</div>
+                            </div>
+                        </div>
+                        <br>
+                        </div>
+                        
                         <div class="input-group mb-3">
                             <!-- Manually create the file input -->
-                            <input type="file" class="form-control " id="id_image_{{ forloop.counter }}" name="{{ image_form.image.html_name }}" onchange="updateFilename('filename-preview-{{ image_form.image.id_for_label }}')">
+                            <input type="file" class="form-control" id="id_image_{{ forloop.counter }}" name="{{ image_form.image.html_name }}" onchange="updateFilename('filename-preview-{{ image_form.image.id_for_label }}')">
                             <span class="input-group-text" id="filename-preview-{{ image_form.image.id_for_label }}"></span>
                         </div>
+
+                    </div>
                     {% endif %}
       
                 {% endfor %}
