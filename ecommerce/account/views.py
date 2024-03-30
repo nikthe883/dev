@@ -39,6 +39,7 @@ import json
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Avg
+from django.views.generic import DeleteView
 
 @method_decorator(login_required(login_url='my-login'), name='dispatch')
 @method_decorator(csrf_protect, name='dispatch')
@@ -198,7 +199,19 @@ class UserProductUpdateView(UpdateView):
     def get_object(self, queryset=None):
         return Product.objects.get(slug=self.kwargs['slug'])
 
-    
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('dashboard')  # URL to redirect to after successful deletion
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handle GET requests.
+        """
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()  # Delete the product from the database
+        messages.success(request, "The product was deleted successfully.")
+        return redirect(success_url)
 
 def register(request):
 

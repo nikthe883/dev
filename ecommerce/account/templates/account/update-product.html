@@ -81,7 +81,7 @@
                 <input type="file" class="form-control" id="{{ image_form.image.id_for_label }}" name="{{ image_form.image.html_name }}" style="display: none;" onchange="updateFilename(this)">
                 <!-- Custom button to trigger file input -->
                 <div class="input-group-prepend">
-                    <button class="btn btn-primary custom-file-upload" type="button" onclick="document.getElementById('{{ image_form.image.id_for_label }}').click()">Choose File</button>
+                    <button class="btn btn-primary custom-file-upload" type="button" onclick="document.getElementById('{{ image_form.image.id_for_label }}').click()">Add new image</button>
                 </div>
                 <!-- Container to display the filename -->
                 <span class="input-group-text" id="filename-preview-{{ image_form.image.id_for_label }}"></span>
@@ -90,11 +90,18 @@
 
     {% endif %}
 
+    {%endfor%}
+
     <br>
     <div class="d-flex justify-content-center"><button type="submit"
         class="btn btn-primary navbar-btn text-white w-100 p-2 text-center">Update Product</button></div>
+        <br>
+        <div class="d-flex justify-content-center">
+            <a href="{% url 'product-delete' product.pk %}" class="btn btn-danger navbar-btn text-white w-100 p-2 text-centerr" onclick="return confirm('Are you sure you want to delete this product?');">Delete Product</a>
+            </div>
 
 </div>
+
 </div>
 
    
@@ -105,6 +112,7 @@
 
 
 </body>
+
 
 <br> <br>
 

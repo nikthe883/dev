@@ -3,8 +3,9 @@
 
 {% load static %}
 
-
 {% block content %}
+
+
 
 <section class="py-4 text-center container">
 
@@ -21,7 +22,7 @@
 
           <p class="lead text-muted">
 
-          Browse all my products
+          Browse extensive collections of unique items.
 
           </p>
 
@@ -35,6 +36,7 @@
 
           {% endif %}
       </div>
+      
 
   
   </div>
@@ -43,7 +45,13 @@
 
 </section>
 
-
+{%if not my_products%}
+<section class="py-4 text-center container">
+  <h1 style="text-align: center;">No products found</h1>
+  <a href="{% url 'store' %}" class="btn btn-primary my-2"> <i class="fa fa-arrow-left" aria-hidden="true"></i> &nbsp; Back to all products </a>
+ 
+</section>
+{%else%}
 
 <div class="album py-5 bg-light">
         
@@ -51,18 +59,20 @@
 
     <div class="pb-3 h5"> All my products </div>
 
-    <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" id="sortDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Sort by
-      </button>
-      <div class="dropdown-menu" aria-labelledby="sortDropdownButton">
-          <a class="dropdown-item {% if sort_by == 'reviews' %}active{% endif %}" href="?sort_by=reviews">Review</a>
-          <a class="dropdown-item {% if sort_by == 'title' %}active{% endif %}" href="?sort_by=title">Title</a>
-          <a class="dropdown-item {% if sort_by == 'price' %}active{% endif %}" href="?sort_by=price">Price</a>
-          <a class="dropdown-item {% if sort_by == 'brand' %}active{% endif %}" href="?sort_by=brand">Brand</a>
-          <a class="dropdown-item {% if sort_by == 'user' %}active{% endif %}" href="?sort_by=user">User</a>
-          <!-- Add more sorting options as needed -->
-      </div>
+     <div class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="sortDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Sort by
+          </button>
+          <div class="dropdown-menu" aria-labelledby="sortDropdownButton">
+              <a class="dropdown-item {% if sort_by == 'reviews' %}active{% endif %}" href="?sort_by=reviews">Review</a>
+              <a class="dropdown-item {% if sort_by == 'title' %}active{% endif %}" href="?sort_by=title">Title</a>
+              <a class="dropdown-item {% if sort_by == 'price' %}active{% endif %}" href="?sort_by=price">Price</a>
+              <a class="dropdown-item {% if sort_by == 'brand' %}active{% endif %}" href="?sort_by=brand">Brand</a>
+              <a class="dropdown-item {% if sort_by == 'user' %}active{% endif %}" href="?sort_by=user">User</a>
+              <!-- Add more sorting options as needed -->
+          </div>
+
+
 
     <hr>
 
@@ -137,13 +147,18 @@
 
             {% endif %}
           </p>
+          <p class="card-text"> 
+            <a class=" text-white text-decoration-none btn btn-primary my-2"  href="{% url 'update-product' slug=product.slug %}">Update Product</a> 
+          </p>
           <hr>
+
       
           <div class="d-flex justify-content-between align-items-center">
       
             <h5> $ {{ product.price }} </h5>
       
           </div>
+          
          
       
         </div>
@@ -186,10 +201,8 @@
   </nav>
 
 </div>
-
+{% endif %}
 {% endblock %}
-
-
 
 
 

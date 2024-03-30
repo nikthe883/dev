@@ -4,7 +4,7 @@ from . import views
 
 
 from django.contrib.auth import views as auth_views
-from .views import CreateProductView, UserProductsView, UserProductUpdateView
+from .views import CreateProductView, UserProductsView, UserProductUpdateView, ProductDeleteView
 
 
 
@@ -83,6 +83,8 @@ urlpatterns = [
 
 
     path('product/<slug:slug>/update/', UserProductUpdateView.as_view(), name='update-product'),
+
+     path('product/<int:pk>/delete/', ProductDeleteView.as_view(), name='product-delete'),
 
 ]
 
