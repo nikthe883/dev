@@ -1,11 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 
 from . models import Category, Product, ProductReview
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from .forms import ProductReviewForm
-from django.views.generic import CreateView
+from django.views.generic import CreateView , DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView
 from django.db.models import Q
@@ -49,7 +49,7 @@ class ReviewUpdateView(LoginRequiredMixin, UpdateView):
     model = ProductReview
     form_class = ProductReviewForm
     template_name = 'store/edit-review.html'
-    success_url = reverse_lazy('store')  # Replace with the URL to redirect after successful update
+    
 
     def get_object(self, queryset=None):
         # Get the review object based on the provided review ID
@@ -57,6 +57,7 @@ class ReviewUpdateView(LoginRequiredMixin, UpdateView):
         return get_object_or_404(ProductReview, pk=review_id)
 
     def form_valid(self, form):
+      
         # Ensure the current user is the author of the review
         if form.instance.author == self.request.user:
             messages.success(self.request, 'Review updated successfully.')
@@ -66,8 +67,35 @@ class ReviewUpdateView(LoginRequiredMixin, UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to update review. Please check your input.')
         return super().form_invalid(form)
+    
+
+    def get_success_url(self):
+        product_slug = self.kwargs['product_slug']
+      
+        return reverse_lazy('product-info', kwargs={'product_slug': product_slug})
 
 
+
+class ReviewDeleteView(DeleteView):
+    model = ProductReview
+    success_url = reverse_lazy('dashboard')  # URL to redirect to after successful deletion
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handle GET requests.
+        """
+        
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()  # Delete the product from the database
+        messages.success(request, "The review was deleted successfully.")
+        return redirect(success_url)
+    
+    def get_success_url(self):
+        product_slug = self.kwargs['product_slug']
+      
+        return reverse_lazy('product-info', kwargs={'product_slug': product_slug})
+    
     
 def store(request):
     sort_by = request.GET.get('sort_by', 'title')

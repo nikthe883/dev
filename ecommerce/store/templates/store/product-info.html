@@ -175,7 +175,7 @@
         {% for review in product.reviews.all %}
         <div class="col-md-4">
             <div class="card mb-3">
-                <div class="card-body">
+                <div class="card-body" style="height: 270px;">
                     <p class="card-text">By {{ review.author }}</p>
                     <div class="rating">
                         {% if review.rating >= 1 %}<span class="fa fa-star checked"></span>{% else %}<span
@@ -191,9 +191,16 @@
                     </div>
                     <hr>
                     <p class="card-text">{{ review.content }}</p>
+                    
                     <!-- Show edit button only if the current user is the author of the review -->
                     {% if user.is_authenticated and review.author == user %}
-                    <a href="{% url 'edit-review' review_id=review.pk %}" class="btn btn-primary">Edit Review</a>
+                    <hr>
+                    <div class="position-absolute bottom-0 end-0">
+                        <a href="{% url 'edit-review' product_slug=product.slug review_id=review.pk %}" class="btn btn-primary ">Edit Review</a>
+                    </div>
+                    <div class="position-absolute bottom-0 start-0">
+                    <a href="{% url 'review-delete' product_slug=product.slug pk=review.pk %}" class="btn btn-danger navbar-btn text-white text-centerr" onclick="return confirm('Are you sure you want to delete this review?');">Delete Review</a>
+                </div>
                     {% endif %}
                 </div>
             </div>

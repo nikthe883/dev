@@ -4,8 +4,14 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<style>
+    body {
+        background-color: lightgray;
+    }
+</style>
 
-<div class="container text-center">
+<body>
+<div class="container text-center bg-white shadow-md p-5 form-layout" style="margin-top: 5rem;">
     <h1>Submit Review</h1>
     {% if messages %}
     <ul>
@@ -37,13 +43,14 @@
         <!-- Review content -->
         <div>
             
-            <label for="review_content">Your Review:</label><br>
+            <legend>Your review</legend>
             <textarea id="review_content" maxlength="99" name="content" rows="4" cols="50" style="resize:none;"></textarea>
         </div>
         <br>
-        <button type="submit">Submit Review</button>
+        <button class="btn btn-primary navbar-btn text-white"type="submit">Submit Review</button>
     </form>
 </div>
+</body>
 {% endblock %}
 
 {% block scripts %}
