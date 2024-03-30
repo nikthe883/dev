@@ -1,14 +1,20 @@
-
 {% extends "./base.html" %}
 
 {% load static %}
 
 {% block content %}
 
-    <style>
-        .lb-outerContainer { max-width:500px; max-height:500px; }
-        .lb-image{ width:500px!important; max-height:500px!important;}
-    </style>
+<style>
+    .lb-outerContainer {
+        max-width: 500px;
+        max-height: 500px;
+    }
+
+    .lb-image {
+        width: 500px !important;
+        max-height: 500px !important;
+    }
+</style>
 
 
 <div class="container">
@@ -17,56 +23,73 @@
 
         <div class="row g-3">
 
-            <div class="col-md-5 col-lg-5 order-md-first bg-light d-flex justify-content-center align-items-center" >
-            
+            <div class="col-md-5 col-lg-5 order-md-first bg-light d-flex justify-content-center align-items-center">
+
                 {% if product.images.all %}
-                
-                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style=" width:100%; height: 300px !important;">
+
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel"
+                    style=" width:100%; height: 300px !important;">
                     <div class="carousel-indicators">
-                      {% for image in product.images.all %}
-                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></button>
-                      {% endfor %}
+                        {% for image in product.images.all %}
+                        <button type="button" data-bs-target="#carouselExampleIndicators"
+                            data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"
+                            {% endif %}></button>
+                        {% endfor %}
                     </div>
                     <div class="carousel-inner" style=" width:100%; height: 300px !important;">
-                      {% for image in product.images.all %}
-                      <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <a href="{{ image.image.url }}" data-lightbox="product-images"><img src="{{ image.image.url }}" class="d-block w-100 " alt="..."></a>
-                      </div>
-                      {% endfor %}
+                        {% for image in product.images.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <a href="{{ image.image.url }}" data-lightbox="product-images"><img
+                                    src="{{ image.image.url }}" class="d-block w-100 " alt="..."></a>
+                        </div>
+                        {% endfor %}
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Previous</span>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Next</span>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
                     </button>
                 </div>
-            {% else %}
-                    
+                {% else %}
+
                 <img class="img-fluid" alt="Responsive image" src="{% static 'placeholder.jpg' %}">
-            {% endif %}
-        
+                {% endif %}
+
             </div>
 
             <div class="col-md-7 col-lg-7 ps-md-3 ps-lg-5">
 
-                <h1 class="mb-0 h4"> {{ product.title }}  </h1>
+                <h1 class="mb-0 h4"> {{ product.title }} </h1>
 
                 <strong> {{ product.brand }} </strong>
-                
+
 
                 <hr>
 
                 <br>
-                
-
-                <p> {{ product.description }} </p>
-
                 <div class="border">
 
                     <div class="col border-bottom">
+                    <div class="col">
+
+                        <div class="row p-3">
+
+                            <div class="col-6"> {{ product.description }} </div>
+
+                          
+
+                        </div>
+
+                    </div>
+               
+           
+
+                    <div class="col border-top">
 
                         <div class="row p-3">
 
@@ -78,66 +101,65 @@
 
                     </div>
 
+
+
                     
-                    <div class="col border-bottom">
-                        <div class="row p-3">
+                </div>
+                {% if user.is_authenticated %}
 
-                           
-                            <div class="col-6 text-start">
 
-                                {% if user.is_authenticated %}
-                                <a href="{% url 'product-review' product_id=product.id %}" class="btn btn-primary mt-3">Write a review</a>
-                                {% else %}
-                                <p>Login to you account to write a review</p>
-                                {% endif %}
-                                
+                <div class="col">
+                    <div class="row p-3">
+                        <div class="col-6 text-start">
 
-                            </div>
+                            Seller : {{product.user}}
+
+
                         </div>
+
                     </div>
-                    {% if user.is_authenticated %}
-                        <div class="col border-bottom">
-                            <div class="row p-3">
-                                
-                                    <div class="col-6 text-start">
-
-                                        <p>Seller : {{product.user}}</p>
-                                
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row p-3">
-                                
-                                    <div class="col-6 text-start">
-                                        <a class="btn btn-primary mt-3" href="{% url 'create-message' product_slug=product.slug %}">Send message to product seller</a>
-                                
-                                </div>
-                            </div>
+                </div>
+                <div class="col border-top">
+                    <div class="row p-4">
                         
+                            <div class="text-center">
+                                <a href="{% url 'product-review' product_id=product.id %}"
+                                    class="btn btn-primary" style="margin-right: 1rem;">
+                                    Write a review
+                                </a>
+                                <a class="btn btn-primary "
+                                    href="{% url 'create-message' product_slug=product.slug %}">
+                                    Message seller
+                                </a>
+                            </div>
+
+                    </div>
+                </div>
+
+
+
+
                     {%else%}
 
-                    <div class="col border-bottom">
+                    <div class="col border ">
 
-                        <div class="row p-3">
+                        <div class="row p-3 ">
 
-                            <div class="col-6"> Log in or register to see seller information </div>
+                            <p class="col-6 d-flex align-items-center">
+                                    Log in or register to contact seller information
+                                </p>
 
-                            <div class="col-6 text-end"> <a href="{% url 'register' %}" class="btn btn-primary my-2"> <i class="fa fa-user-plus" aria-hidden="true"></i> &nbsp; Create an account </a></div>
+                            <div class="col-6 text-end"> <a href="{% url 'register' %}" class="btn btn-primary my-2"> <i
+                                        class="fa fa-user-plus" aria-hidden="true"></i> &nbsp; Create an account </a>
+                            </div>
 
                         </div>
 
                     </div>
-                   
-                        
-                       
 
-                    
                     {%endif%}
 
-                    
-
-                </div>
+                
 
             </div>
 
@@ -146,35 +168,41 @@
     </main>
 
     <br>
-    <h2>Reviews</h2>
-    <div class="row">
+    <hr>
+    <h2 class="text-center">Reviews</h2>
+    <div class="row" style="padding: 4rem;">
         {% if reviews %}
-            {% for review in product.reviews.all %}
-            <div class="col-md-4">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <p class="card-text">By {{ review.author }}</p>
-                        <div class="rating">
-                            {% if review.rating >= 1 %}<span class="fa fa-star checked"></span>{% else %}<span class="fa fa-star"></span>{% endif %}
-                            {% if review.rating >= 2 %}<span class="fa fa-star checked"></span>{% else %}<span class="fa fa-star"></span>{% endif %}
-                            {% if review.rating >= 3 %}<span class="fa fa-star checked"></span>{% else %}<span class="fa fa-star"></span>{% endif %}
-                            {% if review.rating >= 4 %}<span class="fa fa-star checked"></span>{% else %}<span class="fa fa-star"></span>{% endif %}
-                            {% if review.rating >= 5 %}<span class="fa fa-star checked"></span>{% else %}<span class="fa fa-star"></span>{% endif %}
-                        </div>
-                        <hr>
-                        <p class="card-text">{{ review.content }}</p>
-                        <!-- Show edit button only if the current user is the author of the review -->
-                        {% if user.is_authenticated and review.author == user %}
-                        <a href="{% url 'edit-review' review_id=review.pk %}" class="btn btn-primary">Edit Review</a>
-                        {% endif %}
+        {% for review in product.reviews.all %}
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="card-text">By {{ review.author }}</p>
+                    <div class="rating">
+                        {% if review.rating >= 1 %}<span class="fa fa-star checked"></span>{% else %}<span
+                            class="fa fa-star"></span>{% endif %}
+                        {% if review.rating >= 2 %}<span class="fa fa-star checked"></span>{% else %}<span
+                            class="fa fa-star"></span>{% endif %}
+                        {% if review.rating >= 3 %}<span class="fa fa-star checked"></span>{% else %}<span
+                            class="fa fa-star"></span>{% endif %}
+                        {% if review.rating >= 4 %}<span class="fa fa-star checked"></span>{% else %}<span
+                            class="fa fa-star"></span>{% endif %}
+                        {% if review.rating >= 5 %}<span class="fa fa-star checked"></span>{% else %}<span
+                            class="fa fa-star"></span>{% endif %}
                     </div>
+                    <hr>
+                    <p class="card-text">{{ review.content }}</p>
+                    <!-- Show edit button only if the current user is the author of the review -->
+                    {% if user.is_authenticated and review.author == user %}
+                    <a href="{% url 'edit-review' review_id=review.pk %}" class="btn btn-primary">Edit Review</a>
+                    {% endif %}
                 </div>
             </div>
-            {% endfor %}
+        </div>
+        {% endfor %}
         {% else %}
-            <div class="col">
-                <p>No reviews available for this product yet.</p>
-            </div>
+        <div class="col">
+            <p class="text-center">No reviews available for this product yet.</p>
+        </div>
         {% endif %}
     </div>
 
