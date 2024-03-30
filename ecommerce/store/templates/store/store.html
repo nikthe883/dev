@@ -122,16 +122,26 @@
                   <img class="d-block w-100 rounded" src="{% static 'placeholder.jpg' %}" alt="Placeholder" width="100%" height="190"></a>
               {% endif %}
                 
-                  <div class="card-body">
+                  <div class="card-body text-center">
                 
-                    <p class="card-text text-truncate">
+                    <p class="card-text text-truncate ">
                 
-                      <a class="text-info text-decoration-none" href="{{product.get_absolute_url}}"> {{ product.title | capfirst }} </a>
+                      <a class="text-info text-decoration-none" href="{{product.get_absolute_url}}">{{ product.title | capfirst }} </a>
                 
                     </p>
                     <p class="card-text text-truncate" >
                 
-                      {{product.description | capfirst}}
+                      Description: {{product.description | capfirst}}
+                
+                    </p>
+                    <p class="card-text text-truncate" >
+                
+                      Brand: {{product.brand | capfirst}}
+                
+                    </p>
+                    <p class="card-text text-truncate" >
+                
+                      Posted by: {{product.user | capfirst}}
                 
                     </p>
                     <p class="card-text text-truncate" >
@@ -148,6 +158,7 @@
 
                       {% endif %}
                     </p>
+                    <hr>
                 
                     <div class="d-flex justify-content-between align-items-center">
                 

@@ -95,8 +95,24 @@ def list_category(request, category_slug=None):
 
     products = Product.objects.filter(category=category)
 
+    sort_by = request.GET.get('sort_by', 'title')
 
-    return render(request, 'store/list-category.html', {'category':category, 'products':products})
+    if sort_by == 'reviews':
+        all_category_products = products.annotate(avg_rating=Avg('reviews__rating')).order_by('-avg_rating')
+    else:
+        all_category_products = products.order_by(sort_by)
+
+    
+    paginator = Paginator(all_category_products, 50)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {'products':page_obj,
+               'sort_by': sort_by,
+               'category':category,}
+
+
+    return render(request, 'store/list-category.html', context)
 
 
 
