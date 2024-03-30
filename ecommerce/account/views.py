@@ -145,8 +145,9 @@ class UserProductUpdateView(UpdateView):
             formset = PostFormSet(self.request.POST, self.request.FILES, instance=self.object)
         else:
             formset = PostFormSet(instance=self.object)
-
+        formset_count = formset.total_form_count()
         context['formset'] = formset
+        context['formset_count'] = formset_count
         
         return context
     
