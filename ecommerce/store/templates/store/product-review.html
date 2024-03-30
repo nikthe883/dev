@@ -3,7 +3,9 @@
 {% load static %}
 
 {% block content %}
-<div class="container">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+<div class="container text-center">
     <h1>Submit Review</h1>
     {% if messages %}
     <ul>
@@ -15,19 +17,22 @@
     <form method="post">
         {% csrf_token %}
         <!-- Star rating input -->
-        <fieldset class="starability-grow">
+
+        <fieldset >
             <legend>Your rating:</legend>
-            <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
-            <input type="radio" id="rate1" name="rating" value="1" />
-            <label for="rate1" title="Terrible">1 star</label>
-            <input type="radio" id="rate2" name="rating" value="2" />
-            <label for="rate2" title="Not good">2 stars</label>
-            <input type="radio" id="rate3" name="rating" value="3" />
-            <label for="rate3" title="Average">3 stars</label>
-            <input type="radio" id="rate4" name="rating" value="4" />
-            <label for="rate4" title="Very good">4 stars</label>
-            <input type="radio" id="rate5" name="rating" value="5" />
-            <label for="rate5" title="Amazing">5 stars</label>
+            <div class="rate">
+                <input type="radio" id="star5" name="rating" value="5" />
+                <label for="star5" title="text">5 stars</label>
+                <input type="radio" id="star4" name="rating" value="4" />
+                <label for="star4" title="text">4 stars</label>
+                <input type="radio" id="star3" name="rating" value="3" />
+                <label for="star3" title="text">3 stars</label>
+                <input type="radio" id="star2" name="rating" value="2" />
+                <label for="star2" title="text">2 stars</label>
+                <input type="radio" id="star1" name="rating" value="1" />
+                <label for="star1" title="text">1 star</label>
+            </div>
+
         </fieldset>
         <!-- Review content -->
         <div>
@@ -42,10 +47,5 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- Starability script -->
-<script src="{% static 'js/starability-minified.js' %}"></script>
-<script>
-    // Initialize Starability plugin
-    starability('.starability-grow');
-</script>
+
 {% endblock %}
