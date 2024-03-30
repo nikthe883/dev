@@ -95,6 +95,7 @@
                             </div>
                         </div>
                     </div>
+                    {% if user.is_authenticated %}
                         <div class="col border-bottom">
                             <div class="row p-3">
                                 
@@ -109,11 +110,26 @@
                             <div class="row p-3">
                                 
                                     <div class="col-6 text-start">
-                                        <a href="{% url 'create-message' product_slug=product.slug %}">Send message about {{ product.title }}</a>
+                                        <a class="btn btn-primary mt-3" href="{% url 'create-message' product_slug=product.slug %}">Send message to product seller</a>
                                 
                                 </div>
                             </div>
                         
+                    {%else%}
+                   
+                        <div class="row p-3">
+                            
+                                <div class="col-6 text-start">
+
+                                    <p>You need to be loged in to see seller information</p>
+                            
+
+                                </div>
+                            </div>
+                       
+
+                    
+                    {%endif%}
 
                     
 
@@ -127,22 +143,36 @@
 
     <br>
     <h2>Reviews</h2>
-    {% if reviews %}
-        <ul>
+    <div class="row">
+        {% if reviews %}
             {% for review in product.reviews.all %}
-            <div>
-                <p>Rating: {{ review.rating }}</p>
-                <p>Content: {{ review.content }}</p>
-                <!-- Show edit button only if the current user is the author of the review -->
-                {% if user.is_authenticated and review.author == user %}
-                <a href="{% url 'edit-review' review_id=review.pk %}" class="btn btn-primary">Edit Review</a>
-                {% endif %}
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <p class="card-text">By {{ review.author }}</p>
+                        <div class="rating">
+                            {% if review.rating >= 1 %}<span class="fa fa-star checked"></span>{% else %}<span class="fa fa-star"></span>{% endif %}
+                            {% if review.rating >= 2 %}<span class="fa fa-star checked"></span>{% else %}<span class="fa fa-star"></span>{% endif %}
+                            {% if review.rating >= 3 %}<span class="fa fa-star checked"></span>{% else %}<span class="fa fa-star"></span>{% endif %}
+                            {% if review.rating >= 4 %}<span class="fa fa-star checked"></span>{% else %}<span class="fa fa-star"></span>{% endif %}
+                            {% if review.rating >= 5 %}<span class="fa fa-star checked"></span>{% else %}<span class="fa fa-star"></span>{% endif %}
+                        </div>
+                        <hr>
+                        <p class="card-text">{{ review.content }}</p>
+                        <!-- Show edit button only if the current user is the author of the review -->
+                        {% if user.is_authenticated and review.author == user %}
+                        <a href="{% url 'edit-review' review_id=review.pk %}" class="btn btn-primary">Edit Review</a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
             {% endfor %}
-        </ul>
-    {% else %}
-        <p>No reviews available for this product yet.</p>
-    {% endif %}
+        {% else %}
+            <div class="col">
+                <p>No reviews available for this product yet.</p>
+            </div>
+        {% endif %}
+    </div>
 
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">

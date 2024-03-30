@@ -19,7 +19,7 @@ class ProductReviewCreateView(LoginRequiredMixin, CreateView):
     model = ProductReview
     form_class = ProductReviewForm
     template_name = 'store/product-review.html'
-    success_url = reverse_lazy('store')  # Adjust this URL name based on your project
+    
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -37,6 +37,12 @@ class ProductReviewCreateView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['product_id'] = self.kwargs['product_id']
         return context
+    
+    def get_success_url(self):
+        product_id = self.kwargs['product_id']
+        product = Product.objects.get(pk=product_id)
+        return reverse_lazy('product-info', kwargs={'product_slug': product.slug})
+
     
 
 class ReviewUpdateView(LoginRequiredMixin, UpdateView):
