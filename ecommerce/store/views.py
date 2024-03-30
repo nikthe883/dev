@@ -12,7 +12,7 @@ from django.db.models import Q
 from django.views.generic import ListView, View
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-
+from django.db.models import Avg
 from messaging.models import Message
 
 class ProductReviewCreateView(LoginRequiredMixin, CreateView):
@@ -64,13 +64,20 @@ class ReviewUpdateView(LoginRequiredMixin, UpdateView):
 
     
 def store(request):
+    sort_by = request.GET.get('sort_by', 'title')
 
-    all_products = Product.objects.order_by('title')
+    if sort_by == 'reviews':
+        all_products = Product.objects.annotate(avg_rating=Avg('reviews__rating')).order_by('-avg_rating')
+    else:
+        all_products = Product.objects.order_by(sort_by)
+
+    
     paginator = Paginator(all_products, 50)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    context = {'products':page_obj}
+    context = {'products':page_obj,
+               'sort_by': sort_by,}
 
     return render(request, 'store/store.html', context)
 

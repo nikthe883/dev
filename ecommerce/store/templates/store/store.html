@@ -5,7 +5,14 @@
 
 
 {% block content %}
-
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.checked {
+  color: orange;
+}
+</style>
+</head>
 
     <!-- Introduction section -->
   
@@ -52,6 +59,7 @@
     
     </section>
 
+
    
        <!-- All products section -->
       
@@ -61,6 +69,21 @@
     
           <div class="pb-3 h5"> All products </div>
 
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle" type="button" id="sortDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Sort by
+              </button>
+              <div class="dropdown-menu" aria-labelledby="sortDropdownButton">
+                  <a class="dropdown-item {% if sort_by == 'reviews' %}active{% endif %}" href="?sort_by=reviews">Review</a>
+                  <a class="dropdown-item {% if sort_by == 'title' %}active{% endif %}" href="?sort_by=title">Title</a>
+                  <a class="dropdown-item {% if sort_by == 'price' %}active{% endif %}" href="?sort_by=price">Price</a>
+                  <a class="dropdown-item {% if sort_by == 'brand' %}active{% endif %}" href="?sort_by=brand">Brand</a>
+                  <a class="dropdown-item {% if sort_by == 'user' %}active{% endif %}" href="?sort_by=user">User</a>
+                  <!-- Add more sorting options as needed -->
+              </div>
+          
+      
+      </div>
 
           <hr>
 
@@ -111,12 +134,27 @@
                       {{product.description | capfirst}}
                 
                     </p>
+                    <p class="card-text text-truncate" >
+                      {% if product.average_rating %}
+                
+                    <span class="fa fa-star {% if product.average_rating > 0 %} checked {% endif %}"></span>
+                    <span class="fa fa-star {% if product.average_rating > 1 %} checked {% endif %}"></span>
+                    <span class="fa fa-star {% if product.average_rating > 2 %} checked {% endif %}"></span>
+                    <span class="fa fa-star {% if product.average_rating > 3 %} checked {% endif %}" ></span>
+                    <span class="fa fa-star {% if product.average_rating > 4 %} checked {% endif %}"></span>
+                  
+                      {% else %}
+                      No rating yet
+
+                      {% endif %}
+                    </p>
                 
                     <div class="d-flex justify-content-between align-items-center">
                 
                       <h5> $ {{ product.price }} </h5>
                 
                     </div>
+                   
                 
                   </div>
                 

@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.db.models import Avg
 
 from django.urls import reverse
 from django.template.defaultfilters import slugify
@@ -45,6 +45,15 @@ class Product(models.Model):
     slug = models.SlugField(max_length=255)
     price = models.DecimalField(max_digits=9, decimal_places=2)
     user = models.ForeignKey(User, max_length=10, on_delete=models.CASCADE, null=True)
+
+    @property
+    def average_rating(self):
+        return self.reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+
+    @staticmethod
+    def best_product():
+        best_product = Product.objects.annotate(avg_rating=Avg('reviews__rating')).order_by('-avg_rating').first()
+        return best_product
     
 
     def save(self, *args, **kwargs):
