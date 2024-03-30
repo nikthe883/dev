@@ -5,25 +5,49 @@
 
 {% block content %}
 
+    <style>
+        .lb-outerContainer { max-width:500px; max-height:500px; }
+        .lb-image{ width:500px!important; max-height:500px!important;}
+    </style>
+
+
 <div class="container">
 
     <main class="pt-5">
 
         <div class="row g-3">
 
-            <div class="col-md-5 col-lg-5 order-md-first bg-light">
+            <div class="col-md-5 col-lg-5 order-md-first bg-light d-flex justify-content-center align-items-center" >
             
                 {% if product.images.all %}
-              
-                {% for image in product.images.all %}
-                <p> There are images</p>
-                    <img class="img-fluid" alt="Responsive image" src="{{ image.image.url }}">
-                {% endfor %}
+                
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style=" width:100%; height: 300px !important;">
+                    <div class="carousel-indicators">
+                      {% for image in product.images.all %}
+                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></button>
+                      {% endfor %}
+                    </div>
+                    <div class="carousel-inner" style=" width:100%; height: 300px !important;">
+                      {% for image in product.images.all %}
+                      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <a href="{{ image.image.url }}" data-lightbox="product-images"><img src="{{ image.image.url }}" class="d-block w-100 " alt="..."></a>
+                      </div>
+                      {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
             {% else %}
-            
+                    
                 <img class="img-fluid" alt="Responsive image" src="{% static 'placeholder.jpg' %}">
             {% endif %}
-            
+        
             </div>
 
             <div class="col-md-7 col-lg-7 ps-md-3 ps-lg-5">
@@ -121,16 +145,8 @@
     {% endif %}
 
 </div>
-
-
-<script>
-
- 
-
-
-
-</script>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 
 
 {% endblock %}

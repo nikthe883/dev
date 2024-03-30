@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from mptt.models import MPTTModel, TreeForeignKey
+from PIL import Image
 
 class Category(MPTTModel):
     name = models.CharField(max_length=250, db_index=True)
@@ -74,6 +75,7 @@ class Product(models.Model):
 class Images(models.Model):
     product = models.ForeignKey(Product, default=None,on_delete=models.CASCADE,  related_name='images')
     image = models.ImageField(upload_to='images')
+
 
 
 
