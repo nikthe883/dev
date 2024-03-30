@@ -14,7 +14,7 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Avg
 from messaging.models import Message
-
+from django.urls import reverse
 class ProductReviewCreateView(LoginRequiredMixin, CreateView):
     model = ProductReview
     form_class = ProductReviewForm
@@ -131,19 +131,54 @@ class ProductSearch(ListView):
     model = Product
     template_name = 'store/search-results.html'
     context_object_name = 'search_results'
+    paginate_by = 50
+
+    def check_query(self, queryset):
+ 
+        
+        if queryset:
+            # Save query in session
+            self.request.session['search_query'] = queryset
+        elif 'query' in self.request.GET:
+            # Clear session query if an empty search is performed
+            self.request.session.pop('search_query', None)
+
+        # Retrieve query from session if available
+        session_query = self.request.session.get('search_query', '')
+
+        search_results = Product.objects.all()  # Get all products queryset
+
+        if session_query:
+            search_results = search_results.filter(title__icontains=session_query)
+
+        return search_results
 
     def get_queryset(self):
-        
-        myquery = self.request.GET.get('myquery')
+
         query = self.request.GET.get('query')
-        
+
+        sort_by = self.request.GET.get('sort_by', 'title')
         if query:
-            return Product.objects.filter(title__icontains=query).select_related('category')
-        elif myquery:
-            user = self.request.user
-            return Product.objects.filter(title__icontains=myquery, user=user).select_related('category')
+            search_results = self.check_query(query)
         else:
-            return Product.objects.none()
+            search_results = self.check_query(None)
+
+
+        if sort_by == 'reviews':
+            search_results = search_results.annotate(avg_rating=Avg('reviews__rating')).order_by('-avg_rating')
+        else:
+            search_results = search_results.order_by(sort_by)
+
+        return search_results
+        
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        paginator = Paginator(context['search_results'], self.paginate_by)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context['products'] = page_obj
+        return context
 
 
 

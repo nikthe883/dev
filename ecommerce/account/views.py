@@ -38,7 +38,7 @@ from django.views.generic.edit import UpdateView
 import json
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.db.models import Avg
 
 @method_decorator(login_required(login_url='my-login'), name='dispatch')
 @method_decorator(csrf_protect, name='dispatch')
@@ -117,7 +117,15 @@ class UserProductsView(LoginRequiredMixin, ListView):
         current_user = self.request.user
         # Filter products by the current user
         my_products = Product.objects.filter(user=current_user)
-        return my_products
+
+        sort_by = self.request.GET.get('sort_by', 'title')
+
+        if sort_by == 'reviews':
+            all_my_products = my_products.annotate(avg_rating=Avg('reviews__rating')).order_by('-avg_rating')
+        else:
+            all_my_products = my_products.order_by(sort_by)
+
+        return all_my_products
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
