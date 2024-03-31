@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 
 from django.db import transaction
-
+from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
 
 @transaction.atomic
@@ -37,17 +37,14 @@ def create_message(request, product_slug):
                                 # Create a conversation if it doesn't exist
                 conversation = Conversation.objects.filter(participants=receiver_user).filter(participants=product.user).first()
                 
-                for participant in conversation.participants.all():
-                    print(participant.username)
-                
                 message_instance.receiver = receiver_user
                 message_instance.conversation = conversation
                 message_instance.save()
-                print(message_instance.receiver, message_instance.sender)
+                
                 messages.success(request, 'Message sent successfully')
                 return JsonResponse({'status': 'ok'})
             else:
-                print(form.errors)
+               
                 messages.error(request, 'Message not sent successfully')
         else:
             form = MessageForm(request.POST)
@@ -71,6 +68,7 @@ def create_message(request, product_slug):
 
 
                 messages.success(request, 'Message sent successfully')
+                return redirect(reverse_lazy('product-info', kwargs={'product_slug': product_slug}))
             else:
                 messages.error(request, 'Message not sent successfully')
 

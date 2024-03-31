@@ -46,7 +46,7 @@
     <h2>Conversation with 
         {% for participant in conversation.participants.all %}
             {% if participant.id != request.user.id %}
-                {{ participant.username }} About {{conversation.messages.first.subject}}
+                {{ participant.username }}
             {% endif %}
         {% endfor %}
 
