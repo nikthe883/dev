@@ -11,206 +11,212 @@
   <section class="py-4 text-center container">
 
     <div class="row py-lg-5">
-    
-        <div class="col-lg-6 col-md-8 mx-auto">
-            
 
-            <h4> ShopyThing All what you need in one place </h4>
+      <div class="col-lg-6 col-md-8 mx-auto">
 
 
-            <br>
-            
-
-            <p class="lead text-muted">
-
-            Browse extensive collections of unique items.
-
-            </p>
+        <h4> ShopyThing All what you need in one place </h4>
 
 
-            <br>
-            {% if not user.is_authenticated %}
-            <a href="{% url 'register' %}" class="btn btn-primary my-2"> <i class="fa fa-user-plus" aria-hidden="true"></i> &nbsp; Create an account </a>
-            {% else %}
-           
-            <p class="lead text-muted">Hello, {{user.username}}</p>
+        <br>
 
-            {% endif %}
-        </div>
-        
 
-    
+        <p class="lead text-muted">
+
+          Browse extensive collections of unique items.
+
+        </p>
+
+
+        <br>
+        {% if not user.is_authenticated %}
+        <a href="{% url 'register' %}" class="btn btn-primary my-2"> <i class="fa fa-user-plus" aria-hidden="true"></i>
+          &nbsp; Create an account </a>
+        {% else %}
+
+        <p class="lead text-muted">Hello, {{user.username}}</p>
+
+        {% endif %}
+      </div>
+
+
+
     </div>
     <div class="w-50 mx-auto">
-      <form action="{% url 'search-results' %}" method="get" class="d-flex  justify-content-md-start" >
-        <input name="query" type="search" class="form-control me-2" placeholder="Search..."
-            aria-label="Search">
+      <form action="{% url 'search-results' %}" method="get" class="d-flex  justify-content-md-start">
+        <input name="query" type="search" class="form-control me-2" placeholder="Search..." aria-label="Search">
         <button type="submit" class="btn btn-primary my-2">Search</button>
-    </form>
-  </div>
+      </form>
+    </div>
 
 
-</section>
+  </section>
 
   <div class="album py-5 bg-light">
     {% if search_results %}
 
-   <!-- All products section -->
-      
-   <div class="album py-5 bg-light">
-        
-    <div class="container">
+    <!-- All products section -->
 
-      <div class="pb-3 h5"> Results </div>
+    <div class="album py-5 bg-light">
+
+      <div class="container">
+
+        <div class="pb-3 h5"> Results </div>
 
         <div class="dropdown">
-          <button class="btn btn-primary dropdown-toggle" type="button" id="sortDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Sort by
+          <button class="btn btn-primary dropdown-toggle" type="button" id="sortDropdownButton" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Sort by
           </button>
           <div class="dropdown-menu" aria-labelledby="sortDropdownButton">
-              <a class="dropdown-item {% if sort_by == 'reviews' %}active{% endif %}" href="?sort_by=reviews">Review</a>
-              <a class="dropdown-item {% if sort_by == 'title' %}active{% endif %}" href="?sort_by=title">Title</a>
-              <a class="dropdown-item {% if sort_by == 'price' %}active{% endif %}" href="?sort_by=price">Price</a>
-              <a class="dropdown-item {% if sort_by == 'brand' %}active{% endif %}" href="?sort_by=brand">Brand</a>
-              <a class="dropdown-item {% if sort_by == 'user' %}active{% endif %}" href="?sort_by=user">User</a>
-              <!-- Add more sorting options as needed -->
+            <a class="dropdown-item {% if sort_by == 'reviews' %}active{% endif %}" href="?sort_by=reviews">Review</a>
+            <a class="dropdown-item {% if sort_by == 'title' %}active{% endif %}" href="?sort_by=title">Title</a>
+            <a class="dropdown-item {% if sort_by == 'price' %}active{% endif %}" href="?sort_by=price">Price</a>
+            <a class="dropdown-item {% if sort_by == 'brand' %}active{% endif %}" href="?sort_by=brand">Brand</a>
+            <a class="dropdown-item {% if sort_by == 'user' %}active{% endif %}" href="?sort_by=user">User</a>
+            <!-- Add more sorting options as needed -->
           </div>
-      
-  
-  </div>
 
-      <hr>
 
-      <br>
-      
+        </div>
 
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+        <hr>
 
-        
-        {% for product in search_results %}
-         
-        
+        <br>
+
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+
+
+          {% for product in search_results %}
+
+
           <div class="col ">
-            
+
             <div class="card shadow-sm ">
 
-   
-            
-          {% if product.images.all %}
-          
-          
 
 
-          <div id="carouselExampleControls" class="carousel slide " data-ride="carousel">
-            <div class="carousel-inner rounded">
-              {% for image in product.images.all %}
-              <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <a href="{{product.get_absolute_url}}"><img class="d-block w-100" src="{{ image.image.url }}" alt="Slide {{ forloop.counter }}" 
-                  width="100%" height="190"></a>
+              {% if product.images.all %}
+
+
+
+
+              <div id="carouselExampleControls" class="carousel slide " data-ride="carousel">
+                <div class="carousel-inner rounded">
+                  {% for image in product.images.all %}
+                  <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <a href="{{product.get_absolute_url}}"><img class="d-block w-100" src="{{ image.image.url }}"
+                        alt="Slide {{ forloop.counter }}" width="100%" height="190"></a>
+                  </div>
+                  {% endfor %}
+                </div>
               </div>
-              {% endfor %}
-            </div>
-          </div>
               {% else %}
               <a href="{{product.get_absolute_url}}">
-              <img class="d-block w-100 rounded" src="{% static 'placeholder.jpg' %}" alt="Placeholder" width="100%" height="190"></a>
-          {% endif %}
-            
+                <img class="d-block w-100 rounded" src="{% static 'placeholder.jpg' %}" alt="Placeholder" width="100%"
+                  height="190"></a>
+              {% endif %}
+
               <div class="card-body text-center">
-            
+
                 <p class="card-text text-truncate ">
-            
-                  <a class="text-info text-decoration-none" href="{{product.get_absolute_url}}">{{ product.title | capfirst }} </a>
-            
+
+                  <a class="text-info text-decoration-none"
+                    href="{{product.get_absolute_url}}">{{ product.title | capfirst }} </a>
+
                 </p>
-                <p class="card-text text-truncate" >
-                
+                <p class="card-text text-truncate">
+
                   Brand: {{product.brand | capfirst}}
-            
+
                 </p>
-                <p class="card-text text-truncate" >
-            
+                <p class="card-text text-truncate">
+
                   Description: {{product.description | capfirst}}
-            
+
                 </p>
 
-                <p class="card-text text-truncate" >
-            
+                <p class="card-text text-truncate">
+
                   Seller: {{product.user | capfirst}}
-            
+
                 </p>
-                <p class="card-text text-truncate" >
+                <p class="card-text text-truncate">
                   {% if product.average_rating %}
-            
-                <span class="fa fa-star {% if product.average_rating > 0 %} checked {% endif %}"></span>
-                <span class="fa fa-star {% if product.average_rating > 1 %} checked {% endif %}"></span>
-                <span class="fa fa-star {% if product.average_rating > 2 %} checked {% endif %}"></span>
-                <span class="fa fa-star {% if product.average_rating > 3 %} checked {% endif %}" ></span>
-                <span class="fa fa-star {% if product.average_rating > 4 %} checked {% endif %}"></span>
-              
+
+                  <span class="fa fa-star {% if product.average_rating > 0 %} checked {% endif %}"></span>
+                  <span class="fa fa-star {% if product.average_rating > 1 %} checked {% endif %}"></span>
+                  <span class="fa fa-star {% if product.average_rating > 2 %} checked {% endif %}"></span>
+                  <span class="fa fa-star {% if product.average_rating > 3 %} checked {% endif %}"></span>
+                  <span class="fa fa-star {% if product.average_rating > 4 %} checked {% endif %}"></span>
+
                   {% else %}
                   No rating yet
 
                   {% endif %}
                 </p>
                 <hr>
-            
+
                 <div class="d-flex justify-content-between align-items-center">
-            
+
                   <h5> $ {{ product.price }} </h5>
-            
+
                 </div>
-               
-            
+
+
               </div>
-            
+
             </div>
-          
+
           </div>
 
 
-        {% endfor %}
-        
+          {% endfor %}
+
+
+        </div>
 
       </div>
+      <br>
+
+      <nav aria-label="...">
+        <ul class="pagination justify-content-center">
+          {% if products.has_previous %}
+          <li class="page-item">
+            <span class="page-link" href="?page={{ products.previous_page_number }}">Previous</span>
+          </li>
+
+          <li class="page-item"><a class="page-link"
+              href="?page={{ products.previous_page_number }}">{{ products.previous_page_number }}</a></li>
+          {% endif %}
+          <li class="page-item active">
+            <span class="page-link">
+              {{ products.number }}
+              <span class="sr-only">(current)</span>
+            </span>
+          </li>
+          {% if products.has_next %}
+          <li class="page-item"><a class="page-link"
+              href="?page={{ products.next_page_number }}">{{ products.next_page_number }}</a></li>
+          <li class="page-item">
+            <a class="page-link " href="?page={{ products.next_page_number }}">Next</a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
 
     </div>
-    <br>
-
-    <nav aria-label="...">
-      <ul class="pagination justify-content-center">
-        {% if products.has_previous %}
-        <li class="page-item">
-          <span class="page-link" href="?page={{ products.previous_page_number }}">Previous</span>
-        </li>
-       
-        <li class="page-item"><a class="page-link" href="?page={{ products.previous_page_number }}">{{ products.previous_page_number }}</a></li>
-        {% endif %}
-        <li class="page-item active">
-          <span class="page-link">
-            {{ products.number }}
-            <span class="sr-only">(current)</span>
-          </span>
-        </li>
-        {% if products.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ products.next_page_number }}">{{ products.next_page_number }}</a></li>
-        <li class="page-item">
-          <a class="page-link " href="?page={{ products.next_page_number }}">Next</a>
-        </li>
-        {% endif %}
-      </ul>
-    </nav>
-  
-  </div>
 
     {% else %}
     <h1 style="text-align: center;">No products found</h1>
     <div class="h-100 d-flex align-items-center justify-content-center">
-      <a href="{% url 'store' %}" class="btn btn-primary my-2"> <i class="fa fa-arrow-left" aria-hidden="true" ></i> &nbsp; Back to all products </a>
-      
+      <a href="{% url 'store' %}" class="btn btn-primary my-2"> <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        &nbsp; Back to all products </a>
+
     </div>
-    
-   
+
+
     {% endif %}
   </div>
 

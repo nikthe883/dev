@@ -18,7 +18,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <link rel="stylesheet" href= "{%static 'css/index.css' %}">
+    <link rel="stylesheet" href="{%static 'css/index.css' %}">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -41,11 +41,11 @@
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-<style>
-    .checked {
-color: orange;
-}
-</style>
+    <style>
+        .checked {
+            color: orange;
+        }
+    </style>
 </head>
 
 <title> ShopyThing </title>
@@ -67,7 +67,7 @@ color: orange;
         <span class="navbar-toggler-icon"></span>
 
     </button>
-    
+
     <div class="collapse navbar-collapse" id="navbarCollapse">
 
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
@@ -91,21 +91,22 @@ color: orange;
 
                     {% for category in categories %}
                     {% if category.parent is None %}
-                      <li class="nav-item dropend">
-                        <a class="nav-link dropdown-toggle " href="{{ category.get_absolute_url }}"  aria-expanded="false">
-                          {{ category.name | capfirst }}
+                    <li class="nav-item dropend">
+                        <a class="nav-link dropdown-toggle " href="{{ category.get_absolute_url }}"
+                            aria-expanded="false">
+                            {{ category.name | capfirst }}
                         </a>
                         <ul class="dropdown-menu">
-                          {% for subcategory in category.sub_categories.all %}
+                            {% for subcategory in category.sub_categories.all %}
                             <li>
-                              <a class="dropdown-item" href="{{ subcategory.get_absolute_url }}">
-                                {{ subcategory.name | capfirst }}</a>
+                                <a class="dropdown-item" href="{{ subcategory.get_absolute_url }}">
+                                    {{ subcategory.name | capfirst }}</a>
                             </li>
-                          {% endfor %}
+                            {% endfor %}
                         </ul>
-                      </li>
+                    </li>
                     {% endif %}
-                  {% endfor %}
+                    {% endfor %}
 
                 </ul>
 
@@ -116,7 +117,7 @@ color: orange;
 
 
     </div>
- 
+
 
 
 
@@ -136,12 +137,12 @@ color: orange;
             </li>
             <li class="nav-item">
 
-                <a class="btn btn-alert navbar-btn text-white" type="button" href="{% url 'message-list' %}" id="message-container"> <i
-                        class="fa fa-comment" aria-hidden="true"></i> &nbsp; Messages </a>
+                <a class="btn btn-alert navbar-btn text-white" type="button" href="{% url 'message-list' %}"
+                    id="message-container"> <i class="fa fa-comment" aria-hidden="true"></i> &nbsp; Messages </a>
 
             </li>
-            
-  
+
+
 
 
             {% else %}
@@ -239,31 +240,33 @@ color: orange;
 
 <script src="{% static 'js/app.js' %}"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    fetch("/check-new-messages/")
-    .then(function(response) {
-        if (response.ok) {
-            
-            return response.json();  // Parse the JSON response
-        } else {
-            throw new Error('Request failed with status:', response.status);
-        }
-    })
-    .then(function(data) {
-        if (data.has_unread_messages) {
-            // Display notification for unread messages
-            showMessage();
-        }
-    })
-    .catch(function(error) {
-        console.error('Error:', error);
-    });
-});
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("/check-new-messages/")
+            .then(function (response) {
+                if (response.ok) {
 
-function showMessage() {
-    const messageContainer = document.getElementById('message-container');
-    // Update the inner HTML of the message container with the message text
-    messageContainer.innerHTML = '<i class="fa fa-exclamation" aria-hidden="true" style="color: red;"></i> &nbsp; Messages';
-}
-    </script>
+                    return response.json(); // Parse the JSON response
+                } else {
+                    throw new Error('Request failed with status:', response.status);
+                }
+            })
+            .then(function (data) {
+                if (data.has_unread_messages) {
+                    // Display notification for unread messages
+                    showMessage();
+                }
+            })
+            .catch(function (error) {
+                console.error('Error:', error);
+            });
+    });
+
+    function showMessage() {
+        const messageContainer = document.getElementById('message-container');
+        // Update the inner HTML of the message container with the message text
+        messageContainer.innerHTML =
+            '<i class="fa fa-exclamation" aria-hidden="true" style="color: red;"></i> &nbsp; Messages';
+    }
+</script>
+
 </html>
