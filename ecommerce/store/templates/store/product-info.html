@@ -127,10 +127,12 @@
                                     class="btn btn-primary" style="margin-right: 1rem;">
                                     Write a review
                                 </a>
+                                {% if request.user != product.user %}
                                 <a class="btn btn-primary "
                                     href="{% url 'create-message' product_slug=product.slug %}">
                                     Message seller
                                 </a>
+                                {%endif%}
                             </div>
 
                     </div>
