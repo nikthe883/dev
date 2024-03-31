@@ -1,16 +1,15 @@
 from django.db import models
 from django.db.models import Avg
-
 from django.urls import reverse
 from django.template.defaultfilters import slugify
-
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.core.exceptions import ValidationError
 from mptt.models import MPTTModel, TreeForeignKey
-from PIL import Image
+
 
 class Category(MPTTModel):
+    """
+    Model representing a category for products.
+    """
     name = models.CharField(max_length=250, db_index=True)
     slug = models.SlugField(max_length=250, unique=True)
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='sub_categories')
@@ -38,6 +37,9 @@ class Category(MPTTModel):
 
 
 class Product(models.Model):
+    """
+    Model representing a product.
+    """
 
     category = models.ForeignKey(Category, related_name='product', on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=250)
@@ -49,6 +51,9 @@ class Product(models.Model):
 
     @property
     def average_rating(self):
+        """
+        Property to calculate the average rating of the product.
+        """
         return self.reviews.aggregate(Avg('rating'))['rating__avg'] or 0
 
     @staticmethod
@@ -58,6 +63,10 @@ class Product(models.Model):
     
 
     def save(self, *args, **kwargs):
+        """
+        Custom save method to generate slug if not provided.
+        """
+
         if not self.slug:
             self.slug = slugify(self.title)
         super(Product, self).save(*args, **kwargs)
@@ -73,6 +82,10 @@ class Product(models.Model):
 
 
 class Images(models.Model):
+    """
+    Model representing images associated with a product.
+    """
+
     product = models.ForeignKey(Product, default=None,on_delete=models.CASCADE,  related_name='images')
     image = models.ImageField(upload_to='images')
 
@@ -80,6 +93,10 @@ class Images(models.Model):
 
 
 class ProductReview(models.Model):
+    """
+    Model representing a review for a product.
+    """
+
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0, null=True)
