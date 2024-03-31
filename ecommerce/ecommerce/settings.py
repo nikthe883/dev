@@ -23,12 +23,6 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
-#CSRF_TRUSTED_ORIGINS = ['https://www.edenthought.com']
-
-
-# Set allowed cidr nets
-
-#ALLOWED_CIDR_NETS = ['172.17.0.0/16']
 
 
 # Application definition
@@ -76,6 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'ecommerce.urls'
@@ -180,23 +175,6 @@ EMAIL_USE_TLS = 'True'
 EMAIL_HOST_USER = 'popmihaylov@gmail.com' # - Enter your GMAIL address # The host email that sends password reset emails
 EMAIL_HOST_PASSWORD = 'ezqf wqxa dxip nhxd' # - Enter your app password 
 
-
-# AWS credentials:
-'''
-AWS_ACCESS_KEY_ID = "" # Access Key ID 
-AWS_SECRET_ACCESS_KEY = "" # Secret Access Key ID
-
-# S3 configuration settings:
-
-AWS_STORAGE_BUCKET_NAME = '' 
-
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-
-AWS_S3_FILE_OVERWRITE = False
-'''
 
 
 # Admin styling adjustment
