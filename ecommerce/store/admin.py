@@ -1,25 +1,79 @@
 from django.contrib import admin
-from .models import Category, Product, Images
+from django.contrib.auth.models import User
+from .models import Category, Product, Images, ProductReview
+from django.contrib.auth.models import Group, Permission
 from messaging.models import Message, Conversation
 from django.apps import apps
 
+class ImagesInline(admin.TabularInline):
+    model = Images
+    extra = 1
+
+class ProductReviewInline(admin.TabularInline):
+    model = ProductReview
+    extra = 1
+
+
 # Custom admin classes for each model
 class CategoryAdmin(admin.ModelAdmin):
-    pass
+    """
+    Admin configuration for the Category model.
+    """
+
+    prepopulated_fields = {'slug': ('name',)}  # Automatically generate slug from name
+    list_display = ['name', 'slug', 'parent']
+    search_fields = ['name']
+    list_filter = ['parent']
 
 class ProductAdmin(admin.ModelAdmin):
-    pass
+    """
+    Admin configuration for the Product model.
+    """
+
+    prepopulated_fields = {'slug': ('title',)}  # Automatically generate slug from title
+    list_display = ['title', 'brand', 'category', 'price', 'user']
+    search_fields = ['title', 'brand', 'category__name']
+    list_filter = ['category']
+    inlines = [ImagesInline, ProductReviewInline]
 
 class ImagesAdmin(admin.ModelAdmin):
-    pass
+    """
+    Admin configuration for the Images model.
+    """
+
+    list_display = ['product', 'image']
+    search_fields = ['product__title']
 
 class ConversationsAdmin(admin.ModelAdmin):
-    pass
+    """
+    Admin configuration for the Conversation model.
+    """
+
+    list_display = ['id', 'participants_list']
+    search_fields = ['participants__username']
+
+    def participants_list(self, obj):
+        return ", ".join([user.username for user in obj.participants.all()])
+    participants_list.short_description = "Participants"
 
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ['sender', 'receiver', 'subject', 'created_at']
-    search_fields = ['sender__username', 'receiver__username', 'subject']
-    list_filter = ['created_at','sender__username', 'receiver__username', 'subject']
+    """
+    Admin configuration for the Message model.
+    """
+
+    list_display = ['sender', 'receiver', 'subject', 'created_at', 'conversation']
+    search_fields = ['sender__username', 'receiver__username', 'subject', 'conversation__id']
+    list_filter = ['created_at', 'sender__username', 'receiver__username', 'conversation']
+    date_hierarchy = 'created_at'
+
+class ProductReviewAdmin(admin.ModelAdmin):
+    """
+    Admin configuration for the ProductReview model.
+    """
+    
+    list_display = ['product', 'author', 'rating', 'created_at']
+    search_fields = ['product__title', 'author__username']
+    list_filter = ['created_at', 'rating']
 
 # Register custom admin classes for each model
 admin.site.register(Category, CategoryAdmin)
@@ -27,25 +81,14 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(Images, ImagesAdmin)
 admin.site.register(Message, MessageAdmin)
 admin.site.register(Conversation,ConversationsAdmin)
-# Define custom admin groups and assign permissions
-from django.contrib.auth.models import Group, Permission
+admin.site.register(ProductReview, ProductReviewAdmin)
+
 
 # Create or get the admin group
 admin_group, created = Group.objects.get_or_create(name='Admin')
 
 # Get permissions for all models
-# Get all installed apps
-installed_apps = apps.get_app_configs()
-
-# List to store all permissions
-all_permissions = []
-
-# Loop through each installed app
-for app in installed_apps:
-    # Get all permissions for the current app
-    permissions = Permission.objects.filter(content_type__app_label=app.label)
-    # Extend the list of all_permissions with permissions for the current app
-    all_permissions.extend(permissions)
+all_permissions = Permission.objects.all()
 
 # Assign all permissions to the admin group
 admin_group.permissions.set(all_permissions)
@@ -54,14 +97,10 @@ admin_group.permissions.set(all_permissions)
 staff_admin_group, created = Group.objects.get_or_create(name='Staff Admin')
 
 # Assign permissions for limited CRUD operations to the staff admin group
-# Example: Only allow adding and changing products
 staff_admin_group.permissions.set([
     Permission.objects.get(codename='add_product'),
     Permission.objects.get(codename='change_product'),
 ])
-
-# Assign users to the appropriate groups based on their roles
-from django.contrib.auth.models import User
 
 # Get or create users
 admin_user, created = User.objects.get_or_create(username='admin')
