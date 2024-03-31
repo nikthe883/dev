@@ -17,7 +17,7 @@ class Command(BaseCommand):
         
         products_to_create = []
 
-        for _ in range(1000):  # Change 1000 to the number of products you want to create
+        for _ in range(100): 
             category = random.choice(categories)
             user = random.choice(users)
             title = fake.word()
