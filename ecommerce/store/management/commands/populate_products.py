@@ -14,18 +14,19 @@ class Command(BaseCommand):
         fake = Faker()
         categories = Category.objects.all()
         users = User.objects.all()
-        used_titles = set()
+        titles_to_generate = 9000
 
         # Path to the directory containing the product images
         images_dir = r'F:\Downloads\testImages'
 
-        for _ in range(100):
+        for i in range(1, titles_to_generate + 1):
+            title = f"{fake.unique.word()}_{i}"  # Append number to title for uniqueness
+            while Product.objects.filter(title=title).exists():  # Check if title exists in the database
+                i += 1
+                title = f"{fake.unique.word()}_{i}"
+            
             category = random.choice(categories)
             user = random.choice(users)
-            title = fake.unique.word()
-            while title in used_titles:
-                title = fake.unique.word()
-            used_titles.add(title)
             brand = fake.company()
             description = fake.paragraph()
             price = round(random.uniform(1, 1000), 2)
@@ -35,7 +36,7 @@ class Command(BaseCommand):
             image_path = os.path.join(images_dir, image_file)
 
             # Create product instance
-            product = Product.objects.create(
+            product = Product(
                 category=category,
                 title=title,
                 brand=brand,
@@ -44,6 +45,10 @@ class Command(BaseCommand):
                 user=user,
                 slug=slugify(title),
             )
+            product.save()
+
+            # Print message when a product is generated
+            print(f"Generated product: {title}")
 
             # Create images for the product
             with open(image_path, 'rb') as f:
@@ -51,8 +56,7 @@ class Command(BaseCommand):
                 product_image = Images(product=product)
                 product_image.image.save(image_name, File(f), save=True)
 
-        # Create reviews for each product
-        for product in Product.objects.all():
+            # Create reviews for the product
             reviews_to_create = []
             num_reviews = random.randint(1, 10)
             for _ in range(num_reviews):
@@ -64,7 +68,7 @@ class Command(BaseCommand):
                 )
                 reviews_to_create.append(review)
 
-            # Bulk create reviews
+            # Create reviews
             ProductReview.objects.bulk_create(reviews_to_create)
 
         self.stdout.write(self.style.SUCCESS('Successfully populated the database with sample products and reviews'))
