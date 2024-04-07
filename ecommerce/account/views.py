@@ -1,51 +1,38 @@
-
+import json
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-
 from .forms import CreateUserForm, LoginForm, PostFormSet, UpdateUserForm, CreateProductForm
-
-
-from django.contrib.auth.models import User
-
+from django.contrib.auth.models import User, auth
 from django.contrib.sites.shortcuts import get_current_site
 from . token import user_tokenizer_generate
-
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-
-from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate
-
-
 from django.contrib.auth.decorators import login_required
-
-
 from django.contrib import messages
 
 
 # class based views imports
-from django.views.generic.edit import FormView, CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from store.models import Product, Category
 
-from django.contrib.auth.decorators import login_required
+
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 from django.views.decorators.csrf import csrf_protect
 from django.urls import reverse_lazy
 from django.views.generic import ListView
-from django.views.generic.edit import UpdateView
-import json
+
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Avg
 from django.views.generic import DeleteView
 
-@method_decorator(login_required(login_url='my-login'), name='dispatch')
-@method_decorator(csrf_protect, name='dispatch')
-class CreateProductView(CreateView):
+
+class CreateProductView(LoginRequiredMixin, CreateView):
     """Create a new product class based view"""
-    
+
     model = Product
     form_class = CreateProductForm  # Your custom form for product data
     template_name = 'account/add-product.html'
@@ -106,9 +93,6 @@ class CreateProductView(CreateView):
 
     
 
-
-@method_decorator(login_required(login_url='my-login'), name='dispatch')
-@method_decorator(csrf_protect, name='dispatch')
 class UserProductsView(LoginRequiredMixin, ListView):
     """User products list class based view
     """
@@ -141,10 +125,7 @@ class UserProductsView(LoginRequiredMixin, ListView):
         return context
 
 
-
-@method_decorator(login_required(login_url='my-login'), name='dispatch')
-@method_decorator(csrf_protect, name='dispatch')
-class UserProductUpdateView(UpdateView):
+class UserProductUpdateView(LoginRequiredMixin, UpdateView):
     """Product update class based view
     """
     model = Product
