@@ -44,6 +44,8 @@ from django.views.generic import DeleteView
 @method_decorator(login_required(login_url='my-login'), name='dispatch')
 @method_decorator(csrf_protect, name='dispatch')
 class CreateProductView(CreateView):
+    """Create a new product class based view"""
+    
     model = Product
     form_class = CreateProductForm  # Your custom form for product data
     template_name = 'account/add-product.html'
@@ -108,6 +110,8 @@ class CreateProductView(CreateView):
 @method_decorator(login_required(login_url='my-login'), name='dispatch')
 @method_decorator(csrf_protect, name='dispatch')
 class UserProductsView(LoginRequiredMixin, ListView):
+    """User products list class based view
+    """
     model = Product
     template_name = 'account/my-products.html'
     context_object_name = 'my_products'
@@ -141,6 +145,8 @@ class UserProductsView(LoginRequiredMixin, ListView):
 @method_decorator(login_required(login_url='my-login'), name='dispatch')
 @method_decorator(csrf_protect, name='dispatch')
 class UserProductUpdateView(UpdateView):
+    """Product update class based view
+    """
     model = Product
     form_class = CreateProductForm
     template_name = 'account/update-product.html'
@@ -234,6 +240,7 @@ def register(request):
             current_site = get_current_site(request)
 
             subject = 'Account verification email'
+            
 
             message = render_to_string('account/registration/email-verification.html', {
             

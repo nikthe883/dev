@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render, get_object_or_404,HttpResponse
+from django.shortcuts import redirect, render, get_object_or_404
 from .forms import MessageForm
 from store.models import Product
 from .models import Message, Conversation
@@ -6,20 +6,27 @@ from django.http import JsonResponse
 from django.contrib import messages
 import json
 from django.contrib.auth.models import User
-from django.db.models import Q
-
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
 
 @transaction.atomic
+@login_required
 def create_message(request, product_slug):
+
+    """Handles message creation for a product, supporting both form and JSON POST requests. 
+    It validates input data, associates messages with products, senders, and receivers, and optionally 
+    creates or uses existing conversations. Authentication is required."""
+
+
     product = get_object_or_404(Product, slug=product_slug)
     
     if request.method == 'POST':
         if 'application/json' in request.content_type:
             try:
                 data = json.loads(request.body)
+                print(data)
             except json.JSONDecodeError:
                 return JsonResponse({'error': 'Invalid JSON data'}, status=400)
        
@@ -34,7 +41,7 @@ def create_message(request, product_slug):
                 receiver_username = list(data.values())[-1]
                 
                 receiver_user = User.objects.get(username=receiver_username)
-                                # Create a conversation if it doesn't exist
+                # Create a conversation if it doesn't exist
                 conversation = Conversation.objects.filter(participants=receiver_user).filter(participants=product.user).first()
                 
                 message_instance.receiver = receiver_user
@@ -80,6 +87,8 @@ def create_message(request, product_slug):
 
 
 def message_list(request):
+    """Fetches and displays a list of conversations involving the current user."""
+
     current_user = request.user
     conversations = Conversation.objects.filter(participants=current_user)
     return render(request, 'messages/message-list.html', {'conversations': conversations})
@@ -87,6 +96,16 @@ def message_list(request):
 
 
 def delete_conversation(request, conversation_id):
+    """Delete a conversation
+
+
+        Args:
+            request (HttpRequest): The request object, used for passing user feedback.
+            conversation_id (int or str): The ID of the conversation to delete.
+
+        Returns:
+            JsonResponse: A response with a status indicating the operation's outcome.
+    """
     try:
         conversation = Conversation.objects.get(id=conversation_id)
         conversation.delete()
@@ -98,7 +117,15 @@ def delete_conversation(request, conversation_id):
 
 require_POST
 def mark_conversation_messages_read(request, conversation_id):
-    print(conversation_id)
+    """ Marks messages in a conversation as read by the user.
+    
+        Args:
+            request (HttpRequest): The current request.
+            conversation_id (int or str): ID of the conversation.
+    
+        Returns:
+            JsonResponse: Indicates success or failure.
+    """
     try:
         # Get the conversation
         conversation = Conversation.objects.get(pk=conversation_id)
