@@ -1,10 +1,9 @@
 from django.apps import AppConfig
 
-
 class StoreConfig(AppConfig):
-    """
-    AppConfig class for the 'store' app.
-    """
-
-    default_auto_field = 'django.db.models.BigAutoField'
     name = 'store'
+    default_auto_field = 'django.db.models.BigAutoField'
+    
+    def ready(self):
+        # Import the signals module to connect them
+        from . import signals

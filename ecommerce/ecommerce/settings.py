@@ -38,12 +38,12 @@ INSTALLED_APPS = [
     'store', # Django app
 
     'account', # Django app
-
-    'messaging', # Django app
     
     'mathfilters',
 
     'crispy_forms', # Crispy forms
+
+    'messaging', # Django app
 
 ]
 
@@ -101,12 +101,12 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
 
 # Password validation
@@ -183,30 +183,16 @@ EMAIL_HOST_PASSWORD = 'ezqf wqxa dxip nhxd' # - Enter your app password
 
 
 # RDS (Database) configuration settings:
-
-'''
 DATABASES = {
-
     'default': {
-
-        'ENGINE': 'django.db.backends.postgresql',
-
-        'NAME': '',
-
-        'USER': '',
-
-        'PASSWORD': '',
-
-        'HOST': '',
-
-        'PORT': '5432',
-
-
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'test_django',
+        'USER': 'root',
+        'PASSWORD': 'nikola12A',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
-
 }
-'''
-
 
 
 

@@ -84,28 +84,3 @@ admin.site.register(Conversation,ConversationsAdmin)
 admin.site.register(ProductReview, ProductReviewAdmin)
 
 
-# Create or get the admin group
-admin_group, created = Group.objects.get_or_create(name='Admin')
-
-# Get permissions for all models
-all_permissions = Permission.objects.all()
-
-# Assign all permissions to the admin group
-admin_group.permissions.set(all_permissions)
-
-# Create or get the staff admin group
-staff_admin_group, created = Group.objects.get_or_create(name='Staff Admin')
-
-# Assign permissions for limited CRUD operations to the staff admin group
-staff_admin_group.permissions.set([
-    Permission.objects.get(codename='add_product'),
-    Permission.objects.get(codename='change_product'),
-])
-
-# Get or create users
-admin_user, created = User.objects.get_or_create(username='admin')
-staff_admin_user, created = User.objects.get_or_create(username='staff_admin')
-
-# Assign users to groups
-admin_user.groups.add(admin_group)
-staff_admin_user.groups.add(staff_admin_group)
