@@ -11,8 +11,7 @@ https://testdjango.nikthe.tech/
 How to run the project:
 
 Clone the repo:
-git clone https://github.com/nikthe883/dev.git
-
+cd
 Install the requirements:
 pip install -r requirements.txt
 
