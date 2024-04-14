@@ -11,7 +11,9 @@ https://testdjango.nikthe.tech/
 How to run the project:
 
 Clone the repo:
-cd
+There is a virtual environment already in the project
+If you want to run your own virtual environment:
+
 Install the requirements:
 pip install -r requirements.txt
 
