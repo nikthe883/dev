@@ -180,7 +180,7 @@
           <ul class="pagination justify-content-center">
             {% if products.has_previous %}
             <li class="page-item">
-              <span class="page-link" href="?page={{ products.previous_page_number }}">Previous</span>
+              <a class="page-link" href="?page={{ products.previous_page_number }}">Previous</a>
             </li>
            
             <li class="page-item"><a class="page-link" href="?page={{ products.previous_page_number }}">{{ products.previous_page_number }}</a></li>
