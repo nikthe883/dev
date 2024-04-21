@@ -51,15 +51,15 @@
         {% endfor %}
 
     </h2>
-    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
-     aria-controls="collapseExample"  onclick="markConversationMessagesRead('{{conversation.id}}')" id="message-container" >
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapse{{ conversation.id }}"" role="button" aria-expanded="false"
+     aria-controls="collapse{{ conversation.id }}"  onclick="markConversationMessagesRead('{{conversation.id}}')" id="message-container" >
         <i class="fa fa-comment" aria-hidden="true"></i> &nbsp; Show conversation details 
       </a>
       <br>
       <br>
       <br>
 
-      <div class="collapse container" id="collapseExample">
+      <div class="collapse container" id="collapse{{ conversation.id }}">
    
           
             
@@ -136,6 +136,7 @@
                        
                         // Display notification for unread messages
                         showMessage();
+                       
                     }
                 })
                 .catch(function(error) {
@@ -145,7 +146,8 @@
 
             function showMessage() {
                 
-                const messageContainer = document.getElementById('message-container');
+                const messageContainer = document.getElementsById('message-container');
+                
                 
                 // Update the inner HTML of the message container with the message text
                 messageContainer.innerHTML = '<i class="fa fa-comment" aria-hidden="true" style="color: red;"></i> &nbsp; Messages';
