@@ -89,6 +89,7 @@ class ProductReviewCreateView(LoginRequiredMixin, CreateView):
         return reverse_lazy('product-info', kwargs={'product_slug': product.slug})
 
     
+    
 
 class ReviewUpdateView(LoginRequiredMixin, UpdateView):
     """
