@@ -152,6 +152,7 @@ class ReviewUpdateView(LoginRequiredMixin, UpdateView):
 
 
 
+
 class ReviewDeleteView(DeleteView):
     """
     View for deleting a product review.
